@@ -12,7 +12,7 @@ const monitorConsole: {
   [logType: string]: {message,data}[];
 } = {};
 
-
+debugger;
 describe('Dyna logger test', () => {
   it('should log', () => {
     logger.log('test', 'message1', {test:1});

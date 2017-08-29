@@ -116,10 +116,13 @@ class DynaLogger extends eventemitter3_1.EventEmitter {
     clearLogs() {
         this._journal = [];
     }
-    _log(type, section, text_ = '', data = null) {
+    _log(type, section, text_ = '', data) {
         const now = new Date();
         const text = this._createMessage(section, type, text_, now);
         const log = { date: now, type, text, data };
+        const consoleParams = [text];
+        if (data)
+            consoleParams.push(data);
         if (type == 'log' && this._settings.keepLogs)
             this._journal.push(log);
         if (type == 'info' && this._settings.keepInfoLogs)
@@ -131,15 +134,15 @@ class DynaLogger extends eventemitter3_1.EventEmitter {
         if (type == 'debug' && this._settings.keepDebugLogs)
             this._journal.push(log);
         if (type == 'log' && this._settings.consoleLogs)
-            console.log(text, data);
+            console.log(...consoleParams);
         if (type == 'info' && this._settings.consoleInfoLogs)
-            console.log(text, data);
+            console.log(...consoleParams);
         if (type == 'error' && this._settings.consoleErrorLogs)
-            console.error(text, data);
+            console.error(...consoleParams);
         if (type == 'warn' && this._settings.consoleWarnLogs)
-            console.warn(text, data);
+            console.warn(...consoleParams);
         if (type == 'debug' && this._settings.consoleDebugLogs)
-            (console.debug || console.log)(text, data);
+            (console.debug || console.log)(...consoleParams);
         while (this._journal.length > this._settings.bufferLimit)
             this._journal.shift();
         this.emit(this.events.log, log);

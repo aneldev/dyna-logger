@@ -79,21 +79,24 @@ export class DynaLogger extends EventEmitter {
     this._journal = [];
   }
 
-  private _log(type: string, section: string, text_: string = '', data: any = null): void {
+  private _log(type: string, section: string, text_: string = '', data?: any): void {
     const now: Date = new Date();
     const text = this._createMessage(section, type, text_, now);
     const log: ILog = {date: now, type, text, data};
+    const consoleParams=[text];
+
+    if (data) consoleParams.push(data);
 
     if (type == 'log' && this._settings.keepLogs) this._journal.push(log);
     if (type == 'info' && this._settings.keepInfoLogs) this._journal.push(log);
     if (type == 'error' && this._settings.keepErrorLogs) this._journal.push(log);
     if (type == 'warn' && this._settings.keepWarnLogs) this._journal.push(log);
     if (type == 'debug' && this._settings.keepDebugLogs) this._journal.push(log);
-    if (type == 'log' && this._settings.consoleLogs) console.log(text, data);
-    if (type == 'info' && this._settings.consoleInfoLogs) console.log(text, data);
-    if (type == 'error' && this._settings.consoleErrorLogs) console.error(text, data);
-    if (type == 'warn' && this._settings.consoleWarnLogs) console.warn(text, data);
-    if (type == 'debug' && this._settings.consoleDebugLogs) (console.debug || console.log)(text, data);
+    if (type == 'log' && this._settings.consoleLogs) console.log(...consoleParams);
+    if (type == 'info' && this._settings.consoleInfoLogs) console.log(...consoleParams);
+    if (type == 'error' && this._settings.consoleErrorLogs) console.error(...consoleParams);
+    if (type == 'warn' && this._settings.consoleWarnLogs) console.warn(...consoleParams);
+    if (type == 'debug' && this._settings.consoleDebugLogs) (console.debug || console.log)(...consoleParams);
 
     while (this._journal.length > this._settings.bufferLimit) this._journal.shift();
 
