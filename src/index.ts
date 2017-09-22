@@ -7,6 +7,14 @@ export interface ILog {
   data: any;
 }
 
+export interface ITypes{
+  log: string;
+  info: string;
+  error: string;
+  warn: string;
+  debug: string;
+}
+
 export interface ISettings {
   bufferLimit?: number;
   consoleLogs?: boolean;
@@ -45,14 +53,22 @@ export class DynaLogger extends EventEmitter {
   }
 
   private _settings: ISettings;
-  public _journal: ILog[] = [];
+  private _logs: ILog[] = [];
 
   public events: any = {
     log: 'log',
   };
 
+  public types:ITypes={
+    log:'log',
+    info:'info',
+    error:'error',
+    warn:'warn',
+    debug:'debug',
+  };
+
   public get logs(): ILog[] {
-    return [].concat(this._journal);
+    return [].concat(this._logs);
   }
 
   public log(section: string, message: string, data: any = null): void {
@@ -75,8 +91,11 @@ export class DynaLogger extends EventEmitter {
     this._log('debug', section, message, data);
   }
 
-  public clearLogs(): void {
-    this._journal = [];
+  public clear(type?: string): void {
+    if (type)
+      this._logs = this.logs.filter((log: ILog) => log.type !== type);
+    else
+      this._logs = [];
   }
 
   private _log(type: string, section: string, text_: string = '', data?: any): void {
@@ -87,18 +106,18 @@ export class DynaLogger extends EventEmitter {
 
     if (data) consoleParams.push(data);
 
-    if (type == 'log' && this._settings.keepLogs) this._journal.push(log);
-    if (type == 'info' && this._settings.keepInfoLogs) this._journal.push(log);
-    if (type == 'error' && this._settings.keepErrorLogs) this._journal.push(log);
-    if (type == 'warn' && this._settings.keepWarnLogs) this._journal.push(log);
-    if (type == 'debug' && this._settings.keepDebugLogs) this._journal.push(log);
+    if (type == 'log' && this._settings.keepLogs) this._logs.push(log);
+    if (type == 'info' && this._settings.keepInfoLogs) this._logs.push(log);
+    if (type == 'error' && this._settings.keepErrorLogs) this._logs.push(log);
+    if (type == 'warn' && this._settings.keepWarnLogs) this._logs.push(log);
+    if (type == 'debug' && this._settings.keepDebugLogs) this._logs.push(log);
     if (type == 'log' && this._settings.consoleLogs) console.log(...consoleParams);
     if (type == 'info' && this._settings.consoleInfoLogs) console.log(...consoleParams);
     if (type == 'error' && this._settings.consoleErrorLogs) console.error(...consoleParams);
     if (type == 'warn' && this._settings.consoleWarnLogs) console.warn(...consoleParams);
     if (type == 'debug' && this._settings.consoleDebugLogs) (console.debug || console.log)(...consoleParams);
 
-    while (this._journal.length > this._settings.bufferLimit) this._journal.shift();
+    while (this._logs.length > this._settings.bufferLimit) this._logs.shift();
 
     this.emit(this.events.log, log);
   }

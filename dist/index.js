@@ -87,16 +87,23 @@ const eventemitter3_1 = __webpack_require__(1);
 class DynaLogger extends eventemitter3_1.EventEmitter {
     constructor(settings = {}) {
         super();
-        this._journal = [];
+        this._logs = [];
         this.events = {
             log: 'log',
+        };
+        this.types = {
+            log: 'log',
+            info: 'info',
+            error: 'error',
+            warn: 'warn',
+            debug: 'debug',
         };
         this._settings = Object.assign({ bufferLimit: 5000, consoleLogs: true, consoleInfoLogs: true, consoleErrorLogs: true, consoleWarnLogs: true, consoleDebugLogs: true, keepLogs: true, keepInfoLogs: true, keepErrorLogs: true, keepWarnLogs: true, keepDebugLogs: true }, settings);
         if (typeof settings.bufferLimit === 'undefined')
             this.info('DynaLogger', 'bufferLimit not assigned, default is 5000 logs');
     }
     get logs() {
-        return [].concat(this._journal);
+        return [].concat(this._logs);
     }
     log(section, message, data = null) {
         this._log('log', section, message, data);
@@ -113,8 +120,11 @@ class DynaLogger extends eventemitter3_1.EventEmitter {
     debug(section, message, data = null) {
         this._log('debug', section, message, data);
     }
-    clearLogs() {
-        this._journal = [];
+    clear(type) {
+        if (type)
+            this._logs = this.logs.filter((log) => log.type !== type);
+        else
+            this._logs = [];
     }
     _log(type, section, text_ = '', data) {
         const now = new Date();
@@ -124,15 +134,15 @@ class DynaLogger extends eventemitter3_1.EventEmitter {
         if (data)
             consoleParams.push(data);
         if (type == 'log' && this._settings.keepLogs)
-            this._journal.push(log);
+            this._logs.push(log);
         if (type == 'info' && this._settings.keepInfoLogs)
-            this._journal.push(log);
+            this._logs.push(log);
         if (type == 'error' && this._settings.keepErrorLogs)
-            this._journal.push(log);
+            this._logs.push(log);
         if (type == 'warn' && this._settings.keepWarnLogs)
-            this._journal.push(log);
+            this._logs.push(log);
         if (type == 'debug' && this._settings.keepDebugLogs)
-            this._journal.push(log);
+            this._logs.push(log);
         if (type == 'log' && this._settings.consoleLogs)
             console.log(...consoleParams);
         if (type == 'info' && this._settings.consoleInfoLogs)
@@ -143,8 +153,8 @@ class DynaLogger extends eventemitter3_1.EventEmitter {
             console.warn(...consoleParams);
         if (type == 'debug' && this._settings.consoleDebugLogs)
             (console.debug || console.log)(...consoleParams);
-        while (this._journal.length > this._settings.bufferLimit)
-            this._journal.shift();
+        while (this._logs.length > this._settings.bufferLimit)
+            this._logs.shift();
         this.emit(this.events.log, log);
     }
     _createMessage(section, type, text, date) {
