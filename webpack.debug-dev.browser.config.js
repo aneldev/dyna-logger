@@ -7,20 +7,18 @@ const webpack = require('webpack');
 const loaders = require('./webpack.loaders');
 const plugins = require('./webpack.plugins');
 
-console.log('');
-console.log('DEBUG with devtools in nodeJs ');
-console.log('WARNING: you should run the `npm run debug-build` in order to debug your latest changes!');
-console.log('');
-
 const config = {
-  target: 'node', // help: https://webpack.github.io/docs/configuration.html#target
+  target: 'web', // help: https://webpack.github.io/docs/configuration.html#target
   entry: [
+    // inject some code in order to enable the auto refresh of the browse in case of a file's change
+    'webpack-dev-server/client?http://localhost:8027',
     // the entry application code
-    path.resolve(__dirname, 'debug/index.ts')
+    path.resolve(__dirname, 'debug-dev/index.ts')
   ],
+  externals: [],
   output: {
-    path: path.resolve(__dirname, 'debug-ground/debug-on-nodejs'),
-    filename: 'index.js'
+    path: path.resolve(__dirname, 'debug-ground/debug-dev-on-browser'),
+    filename: 'debug-browser.js'
   },
   resolve: {
     alias: {},
@@ -30,7 +28,10 @@ const config = {
     loaders: loaders
   },
   node: {
-    fs: "empty"
+    // universal app? place here your conditional imports for node env
+    fs: "empty",
+    path: "empty",
+    child_process: "empty",
   },
   plugins: plugins,
 };

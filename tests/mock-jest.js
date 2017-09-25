@@ -1,8 +1,9 @@
 // Dev node: Come on!!! this is super ugly...
 // If you find a stable way to debug the jest tests please fork me!
 // As documented here: https://facebook.github.io/jest/docs/troubleshooting.html is not working as far of May/17
-
 if (typeof global === 'undefined' && typeof window !== 'undefined') global = window;
+
+let HIDE_SUCCESS_VALIDATION = true;
 
 global._mockJest = null;
 
@@ -50,7 +51,7 @@ let comparisons = (expectValue, not = false) => {
       let result = expectValue === toBeValue;
       if (not) result = !result;
       if (result) {
-        console.log('        Success, === equal value');
+        if (!HIDE_SUCCESS_VALIDATION) console.log('        Success, === equal value');
         global._mockJest.passed++;
       }
       else {
@@ -68,25 +69,36 @@ function startTests() {
 }
 
 function executeTests() {
-  let completedDecritpions = 0;
   console.log('### TESTs begin');
+  let descriptions = [].concat(global._mockJest.descriptions);
 
-  global._mockJest.descriptions.forEach(description => {
-    console.log('Description::: Start:', description.description);
-    let its = [].concat(description.its);
+  const processTheNextDescription = ()=>{
+    let description = descriptions.shift();
+    if (description) {
+      executeADescription(description, () => {
+        processTheNextDescription();
+      });
+    }
+    else{
+      finished();
+    }
+  };
 
-    executeAnIt(its, () => {
-      completedDecritpions++;
-      console.log('Description::: Finished:', description.description);
+  // start
+  processTheNextDescription();
+}
 
-      if (completedDecritpions === global._mockJest.descriptions.length) {
-        console.log('### All TEST finished, results', global._mockJest);
-      }
-    });
+function executeADescription(description, cbCompleted) {
+  console.log('Description::: Start:', description.description);
+  let its = [].concat(description.its);
+
+  executeIts(its, () => {
+    console.log('Description::: Finished:', description.description);
+    cbCompleted();
   });
 }
 
-function executeAnIt(its, cbCompleted) {
+function executeIts(its, cbCompleted) {
   let it = its.shift();
   if (!it){
     cbCompleted();
@@ -96,11 +108,34 @@ function executeAnIt(its, cbCompleted) {
   console.log('    it:::', it.description);
   if (it.cbTest.length === 0) {
     it.cbTest();
-    executeAnIt(its, cbCompleted);
+    executeIts(its, cbCompleted);
   }
   else{
     it.cbTest(()=>{
-      executeAnIt(its, cbCompleted);
+      executeIts(its, cbCompleted);
     });
+  }
+}
+
+function finished() {
+  let report = '### All TEST finished, results:' + ' ' + 'errors:' + ' ' + global._mockJest.errors + ' ' + 'passed:' + ' ' + global._mockJest.passed;
+  console.log('');
+  if (global._mockJest.errors) {
+    console.log('xx     xx');
+    console.log(' xx   xx ');
+    console.log('  xx xx  ');
+    console.log('   xxx   ');
+    console.log('  xx xx  ');
+    console.log(' xx   xx ');
+    console.log('xx     xx ' + report);
+  }
+  else {
+    console.log('        vv');
+    console.log('       vv');
+    console.log('      vv');
+    console.log('     vv');
+    console.log('vv  vv');
+    console.log(' vvvv');
+    console.log('  vv      ' + report);
   }
 }

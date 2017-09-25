@@ -3,24 +3,26 @@
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
+const nodeExternals = require('webpack-node-externals');
 
 const loaders = require('./webpack.loaders');
 const plugins = require('./webpack.plugins');
 
-console.log('To debug open address: http://localhost:8027 on any browser');
+console.log('');
+console.log('DEBUG with devtools in nodeJs ');
+console.log('WARNING: you should run the `npm run debug-build` in order to debug your latest changes!');
 console.log('');
 
 const config = {
-  target: 'web', // help: https://webpack.github.io/docs/configuration.html#target
+  target: 'node', // help: https://webpack.github.io/docs/configuration.html#target
   entry: [
-    // inject some code in order to enable the auto refresh of the browse in case of a file's change
-    'webpack-dev-server/client?http://localhost:8027',
     // the entry application code
-    path.resolve(__dirname, 'debug/index.ts')
+    path.resolve(__dirname, 'tests/index.ts')
   ],
+  externals: [nodeExternals()], // in order to ignore all modules in node_modules folder
   output: {
-    path: path.resolve(__dirname, 'debug-ground/debug-on-browser'),
-    filename: 'debug-browser.js'
+    path: path.resolve(__dirname, 'debug-ground/debug-test-on-nodejs'),
+    filename: 'index.js'
   },
   resolve: {
     alias: {},
@@ -30,12 +32,9 @@ const config = {
     loaders: loaders
   },
   node: {
-    // universal app? place here your conditional imports for node env
-    fs: "empty",
-    path: "empty",
-    child_process: "empty",
+    fs: "empty"
   },
-  plugins: plugins,
+  plugins: plugins
 };
 
 module.exports = config;
