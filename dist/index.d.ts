@@ -33,6 +33,7 @@ export declare class DynaLogger extends EventEmitter {
     constructor(settings?: ISettings);
     private _settings;
     private _logs;
+    setSettings(settings?: ISettings): void;
     events: IEvents;
     types: ITypes;
     readonly logs: ILog[];

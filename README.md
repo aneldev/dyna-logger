@@ -26,7 +26,7 @@ console.log(logger.logs.length); 	// consoles 1
 
 # Settings 
 
-- bufferLimit: number;
+- bufferLimit: number;			// (default: 5000) -1 = unlimited, 0 = no buffer, >0 size of buffer
 - consoleLogs: boolean;
 - consoleInfoLogs: boolean;
 - consoleErrorLogs: boolean;
