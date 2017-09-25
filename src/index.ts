@@ -8,7 +8,7 @@ export interface ILog {
   data: any;
 }
 
-export interface ITypes{
+export interface ITypes {
   log: string;
   info: string;
   error: string;
@@ -28,6 +28,10 @@ export interface ISettings {
   keepErrorLogs?: boolean;
   keepWarnLogs?: boolean;
   keepDebugLogs?: boolean;
+}
+
+export interface IEvents {
+  log: string;
 }
 
 export class DynaLogger extends EventEmitter {
@@ -56,16 +60,16 @@ export class DynaLogger extends EventEmitter {
   private _settings: ISettings;
   private _logs: ILog[] = [];
 
-  public events: any = {
+  public events: IEvents = {
     log: 'log',
   };
 
-  public types:ITypes={
-    log:'log',
-    info:'info',
-    error:'error',
-    warn:'warn',
-    debug:'debug',
+  public types: ITypes = {
+    log: 'log',
+    info: 'info',
+    error: 'error',
+    warn: 'warn',
+    debug: 'debug',
   };
 
   public get logs(): ILog[] {
@@ -103,7 +107,7 @@ export class DynaLogger extends EventEmitter {
     const now: Date = new Date();
     const text = this._createMessage(section, type, text_, now);
     const log: ILog = {date: now, type, text, data, raw: text_};
-    const consoleParams=[text];
+    const consoleParams = [text];
 
     if (data) consoleParams.push(data);
 

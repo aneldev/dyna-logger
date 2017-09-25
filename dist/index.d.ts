@@ -26,11 +26,14 @@ export interface ISettings {
     keepWarnLogs?: boolean;
     keepDebugLogs?: boolean;
 }
+export interface IEvents {
+    log: string;
+}
 export declare class DynaLogger extends EventEmitter {
     constructor(settings?: ISettings);
     private _settings;
     private _logs;
-    events: any;
+    events: IEvents;
     types: ITypes;
     readonly logs: ILog[];
     log(section: string, message: string, data?: any): void;
