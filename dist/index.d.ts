@@ -3,6 +3,7 @@ export interface ILog {
     date: Date;
     type: string;
     text: string;
+    raw: string;
     data: any;
 }
 export interface ITypes {

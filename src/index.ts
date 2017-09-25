@@ -4,6 +4,7 @@ export interface ILog {
   date: Date;
   type: string;
   text: string;
+  raw: string;  // contains only the source text
   data: any;
 }
 
@@ -101,7 +102,7 @@ export class DynaLogger extends EventEmitter {
   private _log(type: string, section: string, text_: string = '', data?: any): void {
     const now: Date = new Date();
     const text = this._createMessage(section, type, text_, now);
-    const log: ILog = {date: now, type, text, data};
+    const log: ILog = {date: now, type, text, data, raw: text_};
     const consoleParams=[text];
 
     if (data) consoleParams.push(data);

@@ -63,7 +63,8 @@ Returns a ILog
    {
      date: Date;
      type: string;
-     text: string;
+     text: string;  // include the section and date	
+     raw: string;	// contains only the source text
      data: any;
    }
 ``` 

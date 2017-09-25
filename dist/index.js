@@ -129,7 +129,7 @@ class DynaLogger extends eventemitter3_1.EventEmitter {
     _log(type, section, text_ = '', data) {
         const now = new Date();
         const text = this._createMessage(section, type, text_, now);
-        const log = { date: now, type, text, data };
+        const log = { date: now, type, text, data, raw: text_ };
         const consoleParams = [text];
         if (data)
             consoleParams.push(data);
