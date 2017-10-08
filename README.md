@@ -24,7 +24,7 @@ console.log(logger.logs.length); 	// consoles 1
 
 ``` 
 
-# Settings 
+# Configuration 
 
 - bufferLimit: number;			// (default: 5000) -1 = unlimited, 0 = no buffer, >0 size of buffer
 - consoleLogs: boolean;
@@ -68,3 +68,15 @@ Returns a ILog
      data: any;
    }
 ``` 
+# Change log
+
+This project is compatible with Semver.
+
+## v1
+
+- First version
+
+## v2
+
+- Typings fix in package.json
+- Rename of IConfiguration to ISettings 

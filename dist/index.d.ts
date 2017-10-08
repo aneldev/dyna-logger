@@ -13,7 +13,7 @@ export interface ITypes {
     warn: string;
     debug: string;
 }
-export interface ISettings {
+export interface IConfig {
     bufferLimit?: number;
     consoleLogs?: boolean;
     consoleInfoLogs?: boolean;
@@ -30,10 +30,10 @@ export interface IEvents {
     log: string;
 }
 export declare class DynaLogger extends EventEmitter {
-    constructor(settings?: ISettings);
-    private _settings;
+    constructor(config?: IConfig);
+    private _config;
     private _logs;
-    setSettings(settings?: ISettings): void;
+    setConfig(config?: IConfig): void;
     events: IEvents;
     types: ITypes;
     readonly logs: ILog[];

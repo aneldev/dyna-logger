@@ -16,7 +16,7 @@ export interface ITypes {
   debug: string;
 }
 
-export interface ISettings {
+export interface IConfig {
   bufferLimit?: number;
   consoleLogs?: boolean;
   consoleInfoLogs?: boolean;
@@ -35,16 +35,16 @@ export interface IEvents {
 }
 
 export class DynaLogger extends EventEmitter {
-  constructor(settings: ISettings = {}) {
+  constructor(config: IConfig = {}) {
     super();
-    this.setSettings(settings);
+    this.setConfig(config);
   }
 
-  private _settings: ISettings;
+  private _config: IConfig;
   private _logs: ILog[] = [];
 
-  public setSettings(settings: ISettings = {}): void {
-    this._settings = {
+  public setConfig(config: IConfig = {}): void {
+    this._config = {
       bufferLimit: 5000,
       consoleLogs: true,
       consoleInfoLogs: true,
@@ -56,7 +56,7 @@ export class DynaLogger extends EventEmitter {
       keepErrorLogs: true,
       keepWarnLogs: true,
       keepDebugLogs: true,
-      ...settings
+      ...config
     };
   }
 
@@ -112,30 +112,30 @@ export class DynaLogger extends EventEmitter {
     if (data) consoleParams.push(data);
 
     // add to _logs
-    if (type == 'log' && this._settings.keepLogs) this._logs.push(log);
-    if (type == 'info' && this._settings.keepInfoLogs) this._logs.push(log);
-    if (type == 'error' && this._settings.keepErrorLogs) this._logs.push(log);
-    if (type == 'warn' && this._settings.keepWarnLogs) this._logs.push(log);
-    if (type == 'debug' && this._settings.keepDebugLogs) this._logs.push(log);
+    if (type == 'log' && this._config.keepLogs) this._logs.push(log);
+    if (type == 'info' && this._config.keepInfoLogs) this._logs.push(log);
+    if (type == 'error' && this._config.keepErrorLogs) this._logs.push(log);
+    if (type == 'warn' && this._config.keepWarnLogs) this._logs.push(log);
+    if (type == 'debug' && this._config.keepDebugLogs) this._logs.push(log);
 
     // console it
-    if (type == 'log' && this._settings.consoleLogs) console.log(...consoleParams);
-    if (type == 'info' && this._settings.consoleInfoLogs) console.log(...consoleParams);
-    if (type == 'error' && this._settings.consoleErrorLogs) console.error(...consoleParams);
-    if (type == 'warn' && this._settings.consoleWarnLogs) console.warn(...consoleParams);
-    if (type == 'debug' && this._settings.consoleDebugLogs) (console.debug || console.log)(...consoleParams);
+    if (type == 'log' && this._config.consoleLogs) console.log(...consoleParams);
+    if (type == 'info' && this._config.consoleInfoLogs) console.log(...consoleParams);
+    if (type == 'error' && this._config.consoleErrorLogs) console.error(...consoleParams);
+    if (type == 'warn' && this._config.consoleWarnLogs) console.warn(...consoleParams);
+    if (type == 'debug' && this._config.consoleDebugLogs) (console.debug || console.log)(...consoleParams);
 
     // keep the bufferLimit
-    if (this._settings.bufferLimit > -1) {
+    if (this._config.bufferLimit > -1) {
       // clean up
-      while (this._logs.length > this._settings.bufferLimit) this._logs.shift();
+      while (this._logs.length > this._config.bufferLimit) this._logs.shift();
       // set the older with a proper message
-      if (this._settings.bufferLimit > 0 && this._logs.length === this._settings.bufferLimit) {
+      if (this._config.bufferLimit > 0 && this._logs.length === this._config.bufferLimit) {
         this._logs[0] = {
           date: this._logs[0].date,
           type: this.types.warn,
-          text: `--- previous logs deleted due to bufferLimit: ${this._settings.bufferLimit}`,
-          data: {settings: this._settings}
+          text: `--- previous logs deleted due to bufferLimit: ${this._config.bufferLimit}`,
+          data: {config: this._config}
         } as ILog;
       }
     }

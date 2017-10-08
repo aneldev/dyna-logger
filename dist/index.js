@@ -85,7 +85,7 @@ return /******/ (function(modules) { // webpackBootstrap
 Object.defineProperty(exports, "__esModule", { value: true });
 const eventemitter3_1 = __webpack_require__(1);
 class DynaLogger extends eventemitter3_1.EventEmitter {
-    constructor(settings = {}) {
+    constructor(config = {}) {
         super();
         this._logs = [];
         this.events = {
@@ -98,10 +98,10 @@ class DynaLogger extends eventemitter3_1.EventEmitter {
             warn: 'warn',
             debug: 'debug',
         };
-        this.setSettings(settings);
+        this.setConfig(config);
     }
-    setSettings(settings = {}) {
-        this._settings = Object.assign({ bufferLimit: 5000, consoleLogs: true, consoleInfoLogs: true, consoleErrorLogs: true, consoleWarnLogs: true, consoleDebugLogs: true, keepLogs: true, keepInfoLogs: true, keepErrorLogs: true, keepWarnLogs: true, keepDebugLogs: true }, settings);
+    setConfig(config = {}) {
+        this._config = Object.assign({ bufferLimit: 5000, consoleLogs: true, consoleInfoLogs: true, consoleErrorLogs: true, consoleWarnLogs: true, consoleDebugLogs: true, keepLogs: true, keepInfoLogs: true, keepErrorLogs: true, keepWarnLogs: true, keepDebugLogs: true }, config);
     }
     get logs() {
         return [].concat(this._logs);
@@ -135,39 +135,39 @@ class DynaLogger extends eventemitter3_1.EventEmitter {
         if (data)
             consoleParams.push(data);
         // add to _logs
-        if (type == 'log' && this._settings.keepLogs)
+        if (type == 'log' && this._config.keepLogs)
             this._logs.push(log);
-        if (type == 'info' && this._settings.keepInfoLogs)
+        if (type == 'info' && this._config.keepInfoLogs)
             this._logs.push(log);
-        if (type == 'error' && this._settings.keepErrorLogs)
+        if (type == 'error' && this._config.keepErrorLogs)
             this._logs.push(log);
-        if (type == 'warn' && this._settings.keepWarnLogs)
+        if (type == 'warn' && this._config.keepWarnLogs)
             this._logs.push(log);
-        if (type == 'debug' && this._settings.keepDebugLogs)
+        if (type == 'debug' && this._config.keepDebugLogs)
             this._logs.push(log);
         // console it
-        if (type == 'log' && this._settings.consoleLogs)
+        if (type == 'log' && this._config.consoleLogs)
             console.log(...consoleParams);
-        if (type == 'info' && this._settings.consoleInfoLogs)
+        if (type == 'info' && this._config.consoleInfoLogs)
             console.log(...consoleParams);
-        if (type == 'error' && this._settings.consoleErrorLogs)
+        if (type == 'error' && this._config.consoleErrorLogs)
             console.error(...consoleParams);
-        if (type == 'warn' && this._settings.consoleWarnLogs)
+        if (type == 'warn' && this._config.consoleWarnLogs)
             console.warn(...consoleParams);
-        if (type == 'debug' && this._settings.consoleDebugLogs)
+        if (type == 'debug' && this._config.consoleDebugLogs)
             (console.debug || console.log)(...consoleParams);
         // keep the bufferLimit
-        if (this._settings.bufferLimit > -1) {
+        if (this._config.bufferLimit > -1) {
             // clean up
-            while (this._logs.length > this._settings.bufferLimit)
+            while (this._logs.length > this._config.bufferLimit)
                 this._logs.shift();
             // set the older with a proper message
-            if (this._settings.bufferLimit > 0 && this._logs.length === this._settings.bufferLimit) {
+            if (this._config.bufferLimit > 0 && this._logs.length === this._config.bufferLimit) {
                 this._logs[0] = {
                     date: this._logs[0].date,
                     type: this.types.warn,
-                    text: `--- previous logs deleted due to bufferLimit: ${this._settings.bufferLimit}`,
-                    data: { settings: this._settings }
+                    text: `--- previous logs deleted due to bufferLimit: ${this._config.bufferLimit}`,
+                    data: { config: this._config }
                 };
             }
         }
