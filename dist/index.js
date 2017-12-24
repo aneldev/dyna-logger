@@ -82,56 +82,88 @@ return /******/ (function(modules) { // webpackBootstrap
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const eventemitter3_1 = __webpack_require__(1);
-class DynaLogger extends eventemitter3_1.EventEmitter {
-    constructor(config = {}) {
-        super();
-        this._logs = [];
-        this.events = {
+var eventemitter3_1 = __webpack_require__(1);
+var DynaLogger = (function (_super) {
+    __extends(DynaLogger, _super);
+    function DynaLogger(config) {
+        if (config === void 0) { config = {}; }
+        var _this = _super.call(this) || this;
+        _this._logs = [];
+        _this.events = {
             log: 'log',
         };
-        this.types = {
+        _this.types = {
             log: 'log',
             info: 'info',
             error: 'error',
             warn: 'warn',
             debug: 'debug',
         };
-        this.setConfig(config);
+        _this.setConfig(config);
+        return _this;
     }
-    setConfig(config = {}) {
-        this._config = Object.assign({ bufferLimit: 5000, consoleLogs: true, consoleInfoLogs: true, consoleErrorLogs: true, consoleWarnLogs: true, consoleDebugLogs: true, keepLogs: true, keepInfoLogs: true, keepErrorLogs: true, keepWarnLogs: true, keepDebugLogs: true }, config);
-    }
-    get logs() {
-        return [].concat(this._logs);
-    }
-    log(section, message, data = null) {
+    DynaLogger.prototype.setConfig = function (config) {
+        if (config === void 0) { config = {}; }
+        this._config = __assign({ bufferLimit: 5000, consoleLogs: true, consoleInfoLogs: true, consoleErrorLogs: true, consoleWarnLogs: true, consoleDebugLogs: true, keepLogs: true, keepInfoLogs: true, keepErrorLogs: true, keepWarnLogs: true, keepDebugLogs: true }, config);
+    };
+    Object.defineProperty(DynaLogger.prototype, "logs", {
+        get: function () {
+            return [].concat(this._logs);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    DynaLogger.prototype.log = function (section, message, data) {
+        if (data === void 0) { data = null; }
         this._log('log', section, message, data);
-    }
-    info(section, message, data = null) {
+    };
+    DynaLogger.prototype.info = function (section, message, data) {
+        if (data === void 0) { data = null; }
         this._log('info', section, message, data);
-    }
-    error(section, message, data = null) {
+    };
+    DynaLogger.prototype.error = function (section, message, data) {
+        if (data === void 0) { data = null; }
         this._log('error', section, message, data);
-    }
-    warn(section, message, data = null) {
+    };
+    DynaLogger.prototype.warn = function (section, message, data) {
+        if (data === void 0) { data = null; }
         this._log('warn', section, message, data);
-    }
-    debug(section, message, data = null) {
+    };
+    DynaLogger.prototype.debug = function (section, message, data) {
+        if (data === void 0) { data = null; }
         this._log('debug', section, message, data);
-    }
-    clear(type) {
+    };
+    DynaLogger.prototype.clear = function (type) {
         if (type)
-            this._logs = this.logs.filter((log) => log.type !== type);
+            this._logs = this.logs.filter(function (log) { return log.type !== type; });
         else
             this._logs = [];
-    }
-    _log(type, section, text_ = '', data) {
-        const now = new Date();
-        const text = this._createMessage(section, type, text_, now);
-        const log = { date: now, type, text, data, raw: text_ };
-        const consoleParams = [text];
+    };
+    DynaLogger.prototype._log = function (type, section, text_, data) {
+        if (text_ === void 0) { text_ = ''; }
+        var now = new Date();
+        var text = this._createMessage(section, type, text_, now);
+        var log = { date: now, type: type, text: text, data: data, raw: text_ };
+        var consoleParams = [text];
         if (data)
             consoleParams.push(data);
         // add to _logs
@@ -147,15 +179,15 @@ class DynaLogger extends eventemitter3_1.EventEmitter {
             this._logs.push(log);
         // console it
         if (type == 'log' && this._config.consoleLogs)
-            console.log(...consoleParams);
+            console.log.apply(console, consoleParams);
         if (type == 'info' && this._config.consoleInfoLogs)
-            console.log(...consoleParams);
+            console.log.apply(console, consoleParams);
         if (type == 'error' && this._config.consoleErrorLogs)
-            console.error(...consoleParams);
+            console.log.apply(console, consoleParams);
         if (type == 'warn' && this._config.consoleWarnLogs)
-            console.warn(...consoleParams);
+            console.log.apply(console, consoleParams);
         if (type == 'debug' && this._config.consoleDebugLogs)
-            (console.debug || console.log)(...consoleParams);
+            console.log.apply(console, consoleParams);
         // keep the bufferLimit
         if (this._config.bufferLimit > -1) {
             // clean up
@@ -166,17 +198,18 @@ class DynaLogger extends eventemitter3_1.EventEmitter {
                 this._logs[0] = {
                     date: this._logs[0].date,
                     type: this.types.warn,
-                    text: `--- previous logs deleted due to bufferLimit: ${this._config.bufferLimit}`,
+                    text: "--- previous logs deleted due to bufferLimit: " + this._config.bufferLimit,
                     data: { config: this._config }
                 };
             }
         }
         this.emit(this.events.log, log);
-    }
-    _createMessage(section, type, text, date) {
-        return `[${section}] ${date.toLocaleString()} (${type})${text ? ' ' + text : ''}`;
-    }
-}
+    };
+    DynaLogger.prototype._createMessage = function (section, type, text, date) {
+        return "[" + section + "] " + date.toLocaleString() + " (" + type + ")" + (text ? ' ' + text : '');
+    };
+    return DynaLogger;
+}(eventemitter3_1.EventEmitter));
 exports.DynaLogger = DynaLogger;
 
 
