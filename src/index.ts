@@ -121,9 +121,9 @@ export class DynaLogger extends EventEmitter {
     // console it
     if (type == 'log' && this._config.consoleLogs) console.log(...consoleParams);
     if (type == 'info' && this._config.consoleInfoLogs) console.log(...consoleParams);
-    if (type == 'error' && this._config.consoleErrorLogs) console.error(...consoleParams);
-    if (type == 'warn' && this._config.consoleWarnLogs) console.warn(...consoleParams);
-    if (type == 'debug' && this._config.consoleDebugLogs) (console.debug || console.log)(...consoleParams);
+    if (type == 'error' && this._config.consoleErrorLogs) console.log(...consoleParams);
+    if (type == 'warn' && this._config.consoleWarnLogs) console.log(...consoleParams);
+    if (type == 'debug' && this._config.consoleDebugLogs) (console.log)(...consoleParams);
 
     // keep the bufferLimit
     if (this._config.bufferLimit > -1) {
