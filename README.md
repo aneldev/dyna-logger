@@ -21,7 +21,7 @@ logger.info('Login Page', 'Success login', {user: userInfo});
 
 logger.error('Login Page', 'login failed', {user: userInfo, error: errorObject});
 
-console.log(logger.logs.length); 	// consoles 1
+console.log(logger.logs.length); 	// consoles 2
 
 ``` 
 
@@ -41,7 +41,7 @@ console.info('Login Page', 'Success login', {user: userInfo});
 
 console.error('Login Page', 'login failed', {user: userInfo, error: errorObject});
 
-console.log(logger.logs.length); 	// consoles 1
+console.log(logger.logs.length); 	// consoles 2
 
 ``` 
 
