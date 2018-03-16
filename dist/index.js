@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("eventemitter3"));
+		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define("dyna-logger", ["eventemitter3"], factory);
+		define("dyna-logger", [], factory);
 	else if(typeof exports === 'object')
-		exports["dyna-logger"] = factory(require("eventemitter3"));
+		exports["dyna-logger"] = factory();
 	else
-		root["dyna-logger"] = factory(root["eventemitter3"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
+		root["dyna-logger"] = factory();
+})(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -82,16 +82,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -101,29 +91,76 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var eventemitter3_1 = __webpack_require__(1);
-var DynaLogger = (function (_super) {
-    __extends(DynaLogger, _super);
+var ELogType;
+(function (ELogType) {
+    ELogType["LOG"] = "LOG";
+    ELogType["INFO"] = "INFO";
+    ELogType["ERROR"] = "ERROR";
+    ELogType["WARN"] = "WARN";
+    ELogType["DEBUG"] = "DEBUG";
+})(ELogType = exports.ELogType || (exports.ELogType = {}));
+var DynaLogger = /** @class */ (function () {
     function DynaLogger(config) {
         if (config === void 0) { config = {}; }
-        var _this = _super.call(this) || this;
-        _this._logs = [];
-        _this.events = {
+        this._logs = [];
+        this._realConsole = __assign({}, global.console);
+        this.events = {
             log: 'log',
         };
-        _this.types = {
-            log: 'log',
-            info: 'info',
-            error: 'error',
-            warn: 'warn',
-            debug: 'debug',
-        };
-        _this.setConfig(config);
-        return _this;
+        this.setConfig(config);
+        if (this._config.replaceGlobalLogMethods) {
+            this._replaceGlobalLog();
+        }
     }
     DynaLogger.prototype.setConfig = function (config) {
         if (config === void 0) { config = {}; }
-        this._config = __assign({ bufferLimit: 5000, consoleLogs: true, consoleInfoLogs: true, consoleErrorLogs: true, consoleWarnLogs: true, consoleDebugLogs: true, keepLogs: true, keepInfoLogs: true, keepErrorLogs: true, keepWarnLogs: true, keepDebugLogs: true }, config);
+        this._config = __assign({ bufferLimit: 5000, consoleLogs: true, consoleInfoLogs: true, consoleErrorLogs: true, consoleWarnLogs: true, consoleDebugLogs: true, consoleLogType: true, consoleTimestamp: true, keepLogs: true, keepInfoLogs: true, keepErrorLogs: true, keepWarnLogs: true, keepDebugLogs: true, replaceGlobalLogMethods: false, onLog: function (log) { return undefined; } }, config);
+    };
+    DynaLogger.prototype.destroy = function () {
+        if (this._config.replaceGlobalLogMethods) {
+            this._restoreGlobalLog();
+        }
+    };
+    DynaLogger.prototype._replaceGlobalLog = function () {
+        var _this = this;
+        global.console.log = function () {
+            var params = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                params[_i] = arguments[_i];
+            }
+            return _this._log(ELogType.LOG, 'global', params);
+        };
+        global.console.info = function () {
+            var params = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                params[_i] = arguments[_i];
+            }
+            return _this._log(ELogType.INFO, 'global', params);
+        };
+        global.console.error = function () {
+            var params = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                params[_i] = arguments[_i];
+            }
+            return _this._log(ELogType.ERROR, 'global', params);
+        };
+        global.console.warn = function () {
+            var params = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                params[_i] = arguments[_i];
+            }
+            return _this._log(ELogType.WARN, 'global', params);
+        };
+        global.console.debug = function () {
+            var params = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                params[_i] = arguments[_i];
+            }
+            return _this._log(ELogType.DEBUG, 'global', params);
+        };
+    };
+    DynaLogger.prototype._restoreGlobalLog = function () {
+        global.console = __assign({}, global.console, this._realConsole);
     };
     Object.defineProperty(DynaLogger.prototype, "logs", {
         get: function () {
@@ -134,23 +171,23 @@ var DynaLogger = (function (_super) {
     });
     DynaLogger.prototype.log = function (section, message, data) {
         if (data === void 0) { data = null; }
-        this._log('log', section, message, data);
+        this._log(ELogType.LOG, section, message, data);
     };
     DynaLogger.prototype.info = function (section, message, data) {
         if (data === void 0) { data = null; }
-        this._log('info', section, message, data);
+        this._log(ELogType.INFO, section, message, data);
     };
     DynaLogger.prototype.error = function (section, message, data) {
         if (data === void 0) { data = null; }
-        this._log('error', section, message, data);
+        this._log(ELogType.ERROR, section, message, data);
     };
     DynaLogger.prototype.warn = function (section, message, data) {
         if (data === void 0) { data = null; }
-        this._log('warn', section, message, data);
+        this._log(ELogType.WARN, section, message, data);
     };
     DynaLogger.prototype.debug = function (section, message, data) {
         if (data === void 0) { data = null; }
-        this._log('debug', section, message, data);
+        this._log(ELogType.DEBUG, section, message, data);
     };
     DynaLogger.prototype.clear = function (type) {
         if (type)
@@ -160,34 +197,45 @@ var DynaLogger = (function (_super) {
     };
     DynaLogger.prototype._log = function (type, section, text_, data) {
         if (text_ === void 0) { text_ = ''; }
+        var consoleOutput = [];
         var now = new Date();
-        var text = this._createMessage(section, type, text_, now);
-        var log = { date: now, type: type, text: text, data: data, raw: text_ };
-        var consoleParams = [text];
+        var userText;
+        if (Array.isArray(text_))
+            userText = text_;
+        else
+            userText = [text_];
+        if (this._config.consoleLogType)
+            consoleOutput.push(type);
+        if (section)
+            consoleOutput.push(section);
+        if (this._config.consoleTimestamp)
+            consoleOutput.push(now.toLocaleString());
+        consoleOutput = consoleOutput.concat(userText);
+        var log = { date: now, type: type, text: this._stringifyConsoleParams(consoleOutput), data: userText };
         if (data)
-            consoleParams.push(data);
+            consoleOutput.push(data);
         // add to _logs
-        if (type == 'log' && this._config.keepLogs)
+        if (type == ELogType.LOG && this._config.keepLogs)
             this._logs.push(log);
-        if (type == 'info' && this._config.keepInfoLogs)
+        if (type == ELogType.INFO && this._config.keepInfoLogs)
             this._logs.push(log);
-        if (type == 'error' && this._config.keepErrorLogs)
+        if (type == ELogType.ERROR && this._config.keepErrorLogs)
             this._logs.push(log);
-        if (type == 'warn' && this._config.keepWarnLogs)
+        if (type == ELogType.WARN && this._config.keepWarnLogs)
             this._logs.push(log);
-        if (type == 'debug' && this._config.keepDebugLogs)
+        if (type == ELogType.DEBUG && this._config.keepDebugLogs)
             this._logs.push(log);
         // console it
-        if (type == 'log' && this._config.consoleLogs)
-            console.log.apply(console, consoleParams);
-        if (type == 'info' && this._config.consoleInfoLogs)
-            console.log.apply(console, consoleParams);
-        if (type == 'error' && this._config.consoleErrorLogs)
-            console.log.apply(console, consoleParams);
-        if (type == 'warn' && this._config.consoleWarnLogs)
-            console.log.apply(console, consoleParams);
-        if (type == 'debug' && this._config.consoleDebugLogs)
-            console.log.apply(console, consoleParams);
+        if (type == ELogType.LOG && this._config.consoleLogs)
+            (_a = this._realConsole).log.apply(_a, consoleOutput);
+        if (type == ELogType.INFO && this._config.consoleInfoLogs)
+            (_b = this._realConsole).info.apply(_b, consoleOutput);
+        if (type == ELogType.ERROR && this._config.consoleErrorLogs)
+            (_c = this._realConsole).error.apply(_c, consoleOutput);
+        if (type == ELogType.WARN && this._config.consoleWarnLogs)
+            (_d = this._realConsole).warn.apply(_d, consoleOutput);
+        if (type == ELogType.DEBUG && this._config.consoleDebugLogs)
+            (_e = this._realConsole).debug.apply(_e, consoleOutput);
         // keep the bufferLimit
         if (this._config.bufferLimit > -1) {
             // clean up
@@ -197,30 +245,33 @@ var DynaLogger = (function (_super) {
             if (this._config.bufferLimit > 0 && this._logs.length === this._config.bufferLimit) {
                 this._logs[0] = {
                     date: this._logs[0].date,
-                    type: this.types.warn,
+                    type: ELogType.WARN,
                     text: "--- previous logs deleted due to bufferLimit: " + this._config.bufferLimit,
                     data: { config: this._config }
                 };
             }
         }
-        this.emit(this.events.log, log);
+        this._config.onLog(log);
+        var _a, _b, _c, _d, _e;
     };
-    DynaLogger.prototype._createMessage = function (section, type, text, date) {
-        return "[" + section + "] " + date.toLocaleString() + " (" + type + ")" + (text ? ' ' + text : '');
+    DynaLogger.prototype._stringifyConsoleParams = function (params) {
+        return params.reduce(function (acc, value) {
+            if (acc.length)
+                acc += " ";
+            if (typeof value === "string")
+                acc += value;
+            else
+                acc += String(value);
+            return acc;
+        }, '');
     };
     return DynaLogger;
-}(eventemitter3_1.EventEmitter));
+}());
 exports.DynaLogger = DynaLogger;
 
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports) {
-
-module.exports = require("eventemitter3");
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(0);
