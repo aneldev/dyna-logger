@@ -3,8 +3,8 @@ import {EventEmitter} from 'eventemitter3';
 export interface ILog {
   date: Date;
   type: string;
-  text: string;
-  raw: string;  // contains only the source text
+  text: string; // stringified parameters, used in logs property
+	raw: any[];   // contains the paramters as received
   data: any;
 }
 
@@ -28,6 +28,7 @@ export interface IConfig {
   keepErrorLogs?: boolean;
   keepWarnLogs?: boolean;
   keepDebugLogs?: boolean;
+	replaceGlobalLogMethods?: boolean;
 }
 
 export interface IEvents {
@@ -56,9 +57,22 @@ export class DynaLogger extends EventEmitter {
       keepErrorLogs: true,
       keepWarnLogs: true,
       keepDebugLogs: true,
+	    replaceGlobalLogMethods: false,
       ...config
     };
+
+	  if (this._config.replaceGlobalLogMethods) {
+		  this._replaceGlobalLog();
+	  }
   }
+
+	private _realConsole: Console = {...global.console};
+
+	public destroy(): void {
+		if (this._config.replaceGlobalLogMethods) {
+			this._restoreGlobalLog();
+		}
+	}
 
   public events: IEvents = {
     log: 'log',
@@ -71,6 +85,29 @@ export class DynaLogger extends EventEmitter {
     warn: 'warn',
     debug: 'debug',
   };
+
+	private _replaceGlobalLog(): void {
+		global.console.log = (...params: any[]): void => this._log('log', 'global', params);
+		global.console.info = (...params: any[]): void => this._log('info', 'global', params);
+		global.console.error = (...params: any[]): void => this._log('error', 'global', params);
+		global.console.warn = (...params: any[]): void => this._log('warn', 'global', params);
+		global.console.debug = (...params: any[]): void => this._log('debug', 'global', params);
+	}
+
+	private _restoreGlobalLog(): void {
+		global.console = {
+			...global.console,
+			...this._realConsole,
+		}
+	}
+
+	private _stringifyConsoleParams(params: any[]): string {
+		return params.reduce((acc: string, value: any) => {
+			if (acc.length) acc += " ";
+			if (typeof value === "string") acc += value; else acc += String(value);
+			return acc;
+		}, '');
+	}
 
   public get logs(): ILog[] {
     return [].concat(this._logs);
@@ -103,13 +140,17 @@ export class DynaLogger extends EventEmitter {
       this._logs = [];
   }
 
-  private _log(type: string, section: string, text_: string = '', data?: any): void {
-    const now: Date = new Date();
-    const text = this._createMessage(section, type, text_, now);
-    const log: ILog = {date: now, type, text, data, raw: text_};
-    const consoleParams = [text];
+	private _log(type: string, section: string, text_: string | any[] = '', data?: any): void {
+		let consoleOutput: any[] = [];
+		const now: Date = new Date();
+		let userText: any[];
+		if (Array.isArray(text_)) userText = text_; else userText = [text_];
+		consoleOutput.push(section);
+		consoleOutput.push(now.toLocaleString());
+		consoleOutput = consoleOutput.concat(userText);
+		const log: ILog = {date: now, type, text: this._stringifyConsoleParams(consoleOutput), data, raw: userText};
 
-    if (data) consoleParams.push(data);
+		if (data) consoleOutput.push(data);
 
     // add to _logs
     if (type == 'log' && this._config.keepLogs) this._logs.push(log);
@@ -119,11 +160,11 @@ export class DynaLogger extends EventEmitter {
     if (type == 'debug' && this._config.keepDebugLogs) this._logs.push(log);
 
     // console it
-    if (type == 'log' && this._config.consoleLogs) console.log(...consoleParams);
-    if (type == 'info' && this._config.consoleInfoLogs) console.log(...consoleParams);
-    if (type == 'error' && this._config.consoleErrorLogs) console.log(...consoleParams);
-    if (type == 'warn' && this._config.consoleWarnLogs) console.log(...consoleParams);
-    if (type == 'debug' && this._config.consoleDebugLogs) (console.log)(...consoleParams);
+		if (type == 'log' && this._config.consoleLogs) this._realConsole.log(...consoleOutput);
+		if (type == 'info' && this._config.consoleInfoLogs) this._realConsole.info(...consoleOutput);
+		if (type == 'error' && this._config.consoleErrorLogs) this._realConsole.error(...consoleOutput);
+		if (type == 'warn' && this._config.consoleWarnLogs) this._realConsole.warn(...consoleOutput);
+		if (type == 'debug' && this._config.consoleDebugLogs) (this._realConsole.debug)(...consoleOutput);
 
     // keep the bufferLimit
     if (this._config.bufferLimit > -1) {
@@ -141,9 +182,5 @@ export class DynaLogger extends EventEmitter {
     }
 
     this.emit(this.events.log, log);
-  }
-
-  private _createMessage(section: string, type: string, text: string, date: Date): string {
-    return `[${section}] ${date.toLocaleString()} (${type})${text ? ' ' + text : ''}`;
   }
 }

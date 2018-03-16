@@ -26,7 +26,7 @@ console.log(logger.logs.length); 	// consoles 1
 
 # Configuration 
 
-- bufferLimit: number;			// (default: 5000) -1 = unlimited, 0 = no buffer, >0 size of buffer
+- bufferLimit: number;					// (default: 5000) -1 = unlimited, 0 = no buffer, >0 size of buffer
 - consoleLogs: boolean;
 - consoleInfoLogs: boolean;
 - consoleErrorLogs: boolean;
@@ -37,14 +37,35 @@ console.log(logger.logs.length); 	// consoles 1
 - keepErrorLogs: boolean;
 - keepWarnLogs: boolean;
 - keepDebugLogs: boolean;
+- replaceGlobalLogMethods: boolean; 	// call .destroy(); to restore the real console methods
   
 # Methods
 
 ## log(section: string, message: string, data: any = null): void
+
+Consoles a log.
+
 ## info(section: string, message: string, data: any = null): void
+
+Consoles an info.
+
 ## error(section: string, message: string, data: any = null): void
+
+Consoles an error.
+
 ## warn(section: string, message: string, data: any = null): void
+
+Consoles a warn.
+
 ## debug(section: string, message: string, data: any = null): void
+
+Consoles a debug.
+
+## destroy(): void
+
+Shut's down the logger.
+
+If `replaceGlobalLogMethods` is set to true, call `destroy()` is restoring the original methods.
 
 # Properties
 

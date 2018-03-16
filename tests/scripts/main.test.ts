@@ -62,5 +62,16 @@ describe('Dyna logger, clear method test', () => {
     logger.log('test', 'message1', {test: 1});
     logger.clear(logger.types.debug);
     expect(logger.logs.length).toBe(1);
+    debugger;
   });
+});
+
+describe('Dyna logger, replace native console', () => {
+  const logger: DynaLogger = new DynaLogger({
+    bufferLimit: -1,
+    replaceGlobalLogMethods: true,
+  });
+
+  debugger;
+  console.log('something', {a:1});
 });
