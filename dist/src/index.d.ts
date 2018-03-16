@@ -1,12 +1,12 @@
 import { EventEmitter } from 'eventemitter3';
 export interface ILog {
     date: Date;
-    type: ELogTypes;
+    type: ELogType;
     text: string;
     raw: any[];
     data: any;
 }
-export declare enum ELogTypes {
+export declare enum ELogType {
     LOG = "LOG",
     INFO = "INFO",
     ERROR = "ERROR",
@@ -20,6 +20,8 @@ export interface IConfig {
     consoleErrorLogs?: boolean;
     consoleWarnLogs?: boolean;
     consoleDebugLogs?: boolean;
+    consoleLogType?: boolean;
+    consoleTimestamp?: boolean;
     keepLogs?: boolean;
     keepInfoLogs?: boolean;
     keepErrorLogs?: boolean;
@@ -40,7 +42,6 @@ export declare class DynaLogger extends EventEmitter {
     events: IEvents;
     private _replaceGlobalLog();
     private _restoreGlobalLog();
-    private _stringifyConsoleParams(params);
     readonly logs: ILog[];
     log(section: string, message: string, data?: any): void;
     info(section: string, message: string, data?: any): void;
@@ -49,4 +50,5 @@ export declare class DynaLogger extends EventEmitter {
     debug(section: string, message: string, data?: any): void;
     clear(type?: string): void;
     private _log(type, section, text_?, data?);
+    private _stringifyConsoleParams(params);
 }

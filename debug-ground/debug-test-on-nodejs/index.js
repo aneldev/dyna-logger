@@ -109,14 +109,14 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var eventemitter3_1 = __webpack_require__(5);
-var ELogTypes;
-(function (ELogTypes) {
-    ELogTypes["LOG"] = "LOG";
-    ELogTypes["INFO"] = "INFO";
-    ELogTypes["ERROR"] = "ERROR";
-    ELogTypes["WARN"] = "WARN";
-    ELogTypes["DEBUG"] = "DEBUG";
-})(ELogTypes = exports.ELogTypes || (exports.ELogTypes = {}));
+var ELogType;
+(function (ELogType) {
+    ELogType["LOG"] = "LOG";
+    ELogType["INFO"] = "INFO";
+    ELogType["ERROR"] = "ERROR";
+    ELogType["WARN"] = "WARN";
+    ELogType["DEBUG"] = "DEBUG";
+})(ELogType = exports.ELogType || (exports.ELogType = {}));
 var DynaLogger = /** @class */ (function (_super) {
     __extends(DynaLogger, _super);
     function DynaLogger(config) {
@@ -128,14 +128,14 @@ var DynaLogger = /** @class */ (function (_super) {
             log: 'log',
         };
         _this.setConfig(config);
+        if (_this._config.replaceGlobalLogMethods) {
+            _this._replaceGlobalLog();
+        }
         return _this;
     }
     DynaLogger.prototype.setConfig = function (config) {
         if (config === void 0) { config = {}; }
-        this._config = __assign({ bufferLimit: 5000, consoleLogs: true, consoleInfoLogs: true, consoleErrorLogs: true, consoleWarnLogs: true, consoleDebugLogs: true, keepLogs: true, keepInfoLogs: true, keepErrorLogs: true, keepWarnLogs: true, keepDebugLogs: true, replaceGlobalLogMethods: false }, config);
-        if (this._config.replaceGlobalLogMethods) {
-            this._replaceGlobalLog();
-        }
+        this._config = __assign({ bufferLimit: 5000, consoleLogs: true, consoleInfoLogs: true, consoleErrorLogs: true, consoleWarnLogs: true, consoleDebugLogs: true, consoleLogType: true, consoleTimestamp: true, keepLogs: true, keepInfoLogs: true, keepErrorLogs: true, keepWarnLogs: true, keepDebugLogs: true, replaceGlobalLogMethods: false }, config);
     };
     DynaLogger.prototype.destroy = function () {
         if (this._config.replaceGlobalLogMethods) {
@@ -149,50 +149,39 @@ var DynaLogger = /** @class */ (function (_super) {
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogTypes.LOG, 'global', params);
+            return _this._log(ELogType.LOG, 'global', params);
         };
         global.console.info = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogTypes.INFO, 'global', params);
+            return _this._log(ELogType.INFO, 'global', params);
         };
         global.console.error = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogTypes.ERROR, 'global', params);
+            return _this._log(ELogType.ERROR, 'global', params);
         };
         global.console.warn = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogTypes.WARN, 'global', params);
+            return _this._log(ELogType.WARN, 'global', params);
         };
         global.console.debug = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogTypes.DEBUG, 'global', params);
+            return _this._log(ELogType.DEBUG, 'global', params);
         };
     };
     DynaLogger.prototype._restoreGlobalLog = function () {
         global.console = __assign({}, global.console, this._realConsole);
-    };
-    DynaLogger.prototype._stringifyConsoleParams = function (params) {
-        return params.reduce(function (acc, value) {
-            if (acc.length)
-                acc += " ";
-            if (typeof value === "string")
-                acc += value;
-            else
-                acc += String(value);
-            return acc;
-        }, '');
     };
     Object.defineProperty(DynaLogger.prototype, "logs", {
         get: function () {
@@ -203,23 +192,23 @@ var DynaLogger = /** @class */ (function (_super) {
     });
     DynaLogger.prototype.log = function (section, message, data) {
         if (data === void 0) { data = null; }
-        this._log(ELogTypes.LOG, section, message, data);
+        this._log(ELogType.LOG, section, message, data);
     };
     DynaLogger.prototype.info = function (section, message, data) {
         if (data === void 0) { data = null; }
-        this._log(ELogTypes.INFO, section, message, data);
+        this._log(ELogType.INFO, section, message, data);
     };
     DynaLogger.prototype.error = function (section, message, data) {
         if (data === void 0) { data = null; }
-        this._log(ELogTypes.ERROR, section, message, data);
+        this._log(ELogType.ERROR, section, message, data);
     };
     DynaLogger.prototype.warn = function (section, message, data) {
         if (data === void 0) { data = null; }
-        this._log(ELogTypes.WARN, section, message, data);
+        this._log(ELogType.WARN, section, message, data);
     };
     DynaLogger.prototype.debug = function (section, message, data) {
         if (data === void 0) { data = null; }
-        this._log(ELogTypes.DEBUG, section, message, data);
+        this._log(ELogType.DEBUG, section, message, data);
     };
     DynaLogger.prototype.clear = function (type) {
         if (type)
@@ -236,33 +225,37 @@ var DynaLogger = /** @class */ (function (_super) {
             userText = text_;
         else
             userText = [text_];
-        consoleOutput.push(section);
-        consoleOutput.push(now.toLocaleString());
+        if (this._config.consoleLogType)
+            consoleOutput.push(type);
+        if (section)
+            consoleOutput.push(section);
+        if (this._config.consoleTimestamp)
+            consoleOutput.push(now.toLocaleString());
         consoleOutput = consoleOutput.concat(userText);
         var log = { date: now, type: type, text: this._stringifyConsoleParams(consoleOutput), data: data, raw: userText };
         if (data)
             consoleOutput.push(data);
         // add to _logs
-        if (type == ELogTypes.LOG && this._config.keepLogs)
+        if (type == ELogType.LOG && this._config.keepLogs)
             this._logs.push(log);
-        if (type == ELogTypes.INFO && this._config.keepInfoLogs)
+        if (type == ELogType.INFO && this._config.keepInfoLogs)
             this._logs.push(log);
-        if (type == ELogTypes.ERROR && this._config.keepErrorLogs)
+        if (type == ELogType.ERROR && this._config.keepErrorLogs)
             this._logs.push(log);
-        if (type == ELogTypes.WARN && this._config.keepWarnLogs)
+        if (type == ELogType.WARN && this._config.keepWarnLogs)
             this._logs.push(log);
-        if (type == ELogTypes.DEBUG && this._config.keepDebugLogs)
+        if (type == ELogType.DEBUG && this._config.keepDebugLogs)
             this._logs.push(log);
         // console it
-        if (type == ELogTypes.LOG && this._config.consoleLogs)
+        if (type == ELogType.LOG && this._config.consoleLogs)
             (_a = this._realConsole).log.apply(_a, consoleOutput);
-        if (type == ELogTypes.INFO && this._config.consoleInfoLogs)
+        if (type == ELogType.INFO && this._config.consoleInfoLogs)
             (_b = this._realConsole).info.apply(_b, consoleOutput);
-        if (type == ELogTypes.ERROR && this._config.consoleErrorLogs)
+        if (type == ELogType.ERROR && this._config.consoleErrorLogs)
             (_c = this._realConsole).error.apply(_c, consoleOutput);
-        if (type == ELogTypes.WARN && this._config.consoleWarnLogs)
+        if (type == ELogType.WARN && this._config.consoleWarnLogs)
             (_d = this._realConsole).warn.apply(_d, consoleOutput);
-        if (type == ELogTypes.DEBUG && this._config.consoleDebugLogs)
+        if (type == ELogType.DEBUG && this._config.consoleDebugLogs)
             (_e = this._realConsole).debug.apply(_e, consoleOutput);
         // keep the bufferLimit
         if (this._config.bufferLimit > -1) {
@@ -273,7 +266,7 @@ var DynaLogger = /** @class */ (function (_super) {
             if (this._config.bufferLimit > 0 && this._logs.length === this._config.bufferLimit) {
                 this._logs[0] = {
                     date: this._logs[0].date,
-                    type: ELogTypes.WARN,
+                    type: ELogType.WARN,
                     text: "--- previous logs deleted due to bufferLimit: " + this._config.bufferLimit,
                     data: { config: this._config }
                 };
@@ -281,6 +274,17 @@ var DynaLogger = /** @class */ (function (_super) {
         }
         this.emit(this.events.log, log);
         var _a, _b, _c, _d, _e;
+    };
+    DynaLogger.prototype._stringifyConsoleParams = function (params) {
+        return params.reduce(function (acc, value) {
+            if (acc.length)
+                acc += " ";
+            if (typeof value === "string")
+                acc += value;
+            else
+                acc += String(value);
+            return acc;
+        }, '');
     };
     return DynaLogger;
 }(eventemitter3_1.EventEmitter));
@@ -333,29 +337,29 @@ describe('Dyna logger, clear method test', function () {
         expect(logger.logs.length).toBe(5);
     });
     it('should clear logs only', function () {
-        logger.clear(index_1.ELogTypes.LOG);
+        logger.clear(index_1.ELogType.LOG);
         expect(logger.logs.length).toBe(4);
     });
     it('should clear infos only', function () {
-        logger.clear(index_1.ELogTypes.INFO);
+        logger.clear(index_1.ELogType.INFO);
         expect(logger.logs.length).toBe(3);
     });
     it('should clear errors only', function () {
-        logger.clear(index_1.ELogTypes.ERROR);
+        logger.clear(index_1.ELogType.ERROR);
         expect(logger.logs.length).toBe(2);
     });
     it('should clear warns only', function () {
-        logger.clear(index_1.ELogTypes.WARN);
+        logger.clear(index_1.ELogType.WARN);
         expect(logger.logs.length).toBe(1);
     });
     it('should clear debugs only', function () {
         logger.log('test', 'message1', { test: 1 });
-        logger.clear(index_1.ELogTypes.DEBUG);
+        logger.clear(index_1.ELogType.DEBUG);
         expect(logger.logs.length).toBe(1);
         debugger;
     });
 });
-describe.skip('Dyna logger, replace native console', function () {
+describe('Dyna logger, replace native console', function () {
     var logger = new index_1.DynaLogger({
         bufferLimit: -1,
         replaceGlobalLogMethods: true,
