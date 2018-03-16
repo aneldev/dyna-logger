@@ -1,17 +1,17 @@
 import { EventEmitter } from 'eventemitter3';
 export interface ILog {
     date: Date;
-    type: string;
+    type: ELogTypes;
     text: string;
     raw: any[];
     data: any;
 }
-export interface ITypes {
-    log: string;
-    info: string;
-    error: string;
-    warn: string;
-    debug: string;
+export declare enum ELogTypes {
+    LOG = "LOG",
+    INFO = "INFO",
+    ERROR = "ERROR",
+    WARN = "WARN",
+    DEBUG = "DEBUG",
 }
 export interface IConfig {
     bufferLimit?: number;
@@ -38,7 +38,6 @@ export declare class DynaLogger extends EventEmitter {
     private _realConsole;
     destroy(): void;
     events: IEvents;
-    types: ITypes;
     private _replaceGlobalLog();
     private _restoreGlobalLog();
     private _stringifyConsoleParams(params);

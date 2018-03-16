@@ -1,4 +1,4 @@
-import {DynaLogger, ILog} from "../../src/index";
+import {DynaLogger, ELogTypes, ILog} from "../../src/index";
 
 declare let jasmine: any, describe: any, expect: any, it: any;
 if (typeof jasmine !== 'undefined') jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
@@ -43,30 +43,30 @@ describe('Dyna logger, clear method test', () => {
     expect(logger.logs.length).toBe(5);
   });
   it('should clear logs only', () => {
-    logger.clear(logger.types.log);
+    logger.clear(ELogTypes.LOG);
     expect(logger.logs.length).toBe(4);
   });
   it('should clear infos only', () => {
-    logger.clear(logger.types.info);
+    logger.clear(ELogTypes.INFO);
     expect(logger.logs.length).toBe(3);
   });
   it('should clear errors only', () => {
-    logger.clear(logger.types.error);
+    logger.clear(ELogTypes.ERROR);
     expect(logger.logs.length).toBe(2);
   });
   it('should clear warns only', () => {
-    logger.clear(logger.types.warn);
+    logger.clear(ELogTypes.WARN);
     expect(logger.logs.length).toBe(1);
   });
   it('should clear debugs only', () => {
     logger.log('test', 'message1', {test: 1});
-    logger.clear(logger.types.debug);
+    logger.clear(ELogTypes.DEBUG);
     expect(logger.logs.length).toBe(1);
     debugger;
   });
 });
 
-describe('Dyna logger, replace native console', () => {
+describe.skip('Dyna logger, replace native console', () => {
   const logger: DynaLogger = new DynaLogger({
     bufferLimit: -1,
     replaceGlobalLogMethods: true,
