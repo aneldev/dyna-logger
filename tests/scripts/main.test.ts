@@ -1,4 +1,4 @@
-import {DynaLogger, ILog} from "../src/index";
+import {DynaLogger, ILog} from "../../src/index";
 
 declare let jasmine: any, describe: any, expect: any, it: any;
 if (typeof jasmine !== 'undefined') jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;

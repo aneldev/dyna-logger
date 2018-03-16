@@ -2,7 +2,7 @@
 
 Tiny logger with limited buffer for universal environments.
 
-Written in Typascript, runs everywhere.
+Written in Typescript, runs everywhere.
 
 # Usage
 
