@@ -1,6 +1,6 @@
 {
   "name": "dyna-logger",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Tiny logger with limited buffer for universal environments",
   "repository": {
     "type": "git",
