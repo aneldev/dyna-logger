@@ -1,4 +1,20 @@
-import {EventEmitter} from 'eventemitter3';
+export interface IConfig {
+	bufferLimit?: number;
+	consoleLogs?: boolean;
+	consoleInfoLogs?: boolean;
+	consoleErrorLogs?: boolean;
+	consoleWarnLogs?: boolean;
+	consoleDebugLogs?: boolean;
+	consoleLogType?: boolean;
+	consoleTimestamp?: boolean;
+	keepLogs?: boolean;
+	keepInfoLogs?: boolean;
+	keepErrorLogs?: boolean;
+	keepWarnLogs?: boolean;
+	keepDebugLogs?: boolean;
+	replaceGlobalLogMethods?: boolean;
+	onLog?: (log: ILog) => void;
+}
 
 export interface ILog {
 	date: Date;
@@ -15,31 +31,12 @@ export enum ELogType {
 	DEBUG = 'DEBUG',
 }
 
-export interface IConfig {
-	bufferLimit?: number;
-	consoleLogs?: boolean;
-	consoleInfoLogs?: boolean;
-	consoleErrorLogs?: boolean;
-	consoleWarnLogs?: boolean;
-	consoleDebugLogs?: boolean;
-	consoleLogType?: boolean;
-	consoleTimestamp?: boolean;
-	keepLogs?: boolean;
-	keepInfoLogs?: boolean;
-	keepErrorLogs?: boolean;
-	keepWarnLogs?: boolean;
-	keepDebugLogs?: boolean;
-	replaceGlobalLogMethods?: boolean;
-}
-
 export interface IEvents {
 	log: string;
 }
 
-export class DynaLogger extends EventEmitter {
+export class DynaLogger {
 	constructor(config: IConfig = {}) {
-		super();
-
 		this.setConfig(config);
 
 		if (this._config.replaceGlobalLogMethods) {
@@ -66,6 +63,7 @@ export class DynaLogger extends EventEmitter {
 			keepWarnLogs: true,
 			keepDebugLogs: true,
 			replaceGlobalLogMethods: false,
+			onLog: (log: ILog) => undefined,
 			...config,
 		};
 	}
@@ -170,7 +168,7 @@ export class DynaLogger extends EventEmitter {
 			}
 		}
 
-		this.emit(this.events.log, log);
+		this._config.onLog(log);
 	}
 
 	private _stringifyConsoleParams(params: any[]): string {

@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -89,16 +89,6 @@ module.exports = require("babel-polyfill");
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -108,7 +98,6 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var eventemitter3_1 = __webpack_require__(5);
 var ELogType;
 (function (ELogType) {
     ELogType["LOG"] = "LOG";
@@ -117,25 +106,22 @@ var ELogType;
     ELogType["WARN"] = "WARN";
     ELogType["DEBUG"] = "DEBUG";
 })(ELogType = exports.ELogType || (exports.ELogType = {}));
-var DynaLogger = /** @class */ (function (_super) {
-    __extends(DynaLogger, _super);
+var DynaLogger = /** @class */ (function () {
     function DynaLogger(config) {
         if (config === void 0) { config = {}; }
-        var _this = _super.call(this) || this;
-        _this._logs = [];
-        _this._realConsole = __assign({}, global.console);
-        _this.events = {
+        this._logs = [];
+        this._realConsole = __assign({}, global.console);
+        this.events = {
             log: 'log',
         };
-        _this.setConfig(config);
-        if (_this._config.replaceGlobalLogMethods) {
-            _this._replaceGlobalLog();
+        this.setConfig(config);
+        if (this._config.replaceGlobalLogMethods) {
+            this._replaceGlobalLog();
         }
-        return _this;
     }
     DynaLogger.prototype.setConfig = function (config) {
         if (config === void 0) { config = {}; }
-        this._config = __assign({ bufferLimit: 5000, consoleLogs: true, consoleInfoLogs: true, consoleErrorLogs: true, consoleWarnLogs: true, consoleDebugLogs: true, consoleLogType: true, consoleTimestamp: true, keepLogs: true, keepInfoLogs: true, keepErrorLogs: true, keepWarnLogs: true, keepDebugLogs: true, replaceGlobalLogMethods: false }, config);
+        this._config = __assign({ bufferLimit: 5000, consoleLogs: true, consoleInfoLogs: true, consoleErrorLogs: true, consoleWarnLogs: true, consoleDebugLogs: true, consoleLogType: true, consoleTimestamp: true, keepLogs: true, keepInfoLogs: true, keepErrorLogs: true, keepWarnLogs: true, keepDebugLogs: true, replaceGlobalLogMethods: false, onLog: function (log) { return undefined; } }, config);
     };
     DynaLogger.prototype.destroy = function () {
         if (this._config.replaceGlobalLogMethods) {
@@ -232,7 +218,7 @@ var DynaLogger = /** @class */ (function (_super) {
         if (this._config.consoleTimestamp)
             consoleOutput.push(now.toLocaleString());
         consoleOutput = consoleOutput.concat(userText);
-        var log = { date: now, type: type, text: this._stringifyConsoleParams(consoleOutput), data: data, raw: userText };
+        var log = { date: now, type: type, text: this._stringifyConsoleParams(consoleOutput), data: userText };
         if (data)
             consoleOutput.push(data);
         // add to _logs
@@ -272,7 +258,7 @@ var DynaLogger = /** @class */ (function (_super) {
                 };
             }
         }
-        this.emit(this.events.log, log);
+        this._config.onLog(log);
         var _a, _b, _c, _d, _e;
     };
     DynaLogger.prototype._stringifyConsoleParams = function (params) {
@@ -287,7 +273,7 @@ var DynaLogger = /** @class */ (function (_super) {
         }, '');
     };
     return DynaLogger;
-}(eventemitter3_1.EventEmitter));
+}());
 exports.DynaLogger = DynaLogger;
 
 
@@ -303,8 +289,10 @@ if (typeof jasmine !== 'undefined')
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
 describe('Dyna logger i/o test', function () {
     var collectedLogs = [];
-    var logger = new index_1.DynaLogger({ bufferLimit: 200 });
-    logger.on('log', function (log) { return collectedLogs.push(log); });
+    var logger = new index_1.DynaLogger({
+        bufferLimit: 200,
+        onLog: function (log) { return collectedLogs.push(log); },
+    });
     it('should log', function () {
         logger.log('test', 'message1', { test: 1 });
         expect(logger.logs.length).toBe(collectedLogs.length);
@@ -525,12 +513,6 @@ function finished() {
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports) {
-
-module.exports = require("eventemitter3");
-
-/***/ }),
-/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(1);

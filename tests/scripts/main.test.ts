@@ -6,8 +6,10 @@ if (typeof jasmine !== 'undefined') jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
 describe('Dyna logger i/o test', () => {
   const collectedLogs: ILog[] = [];
 
-  const logger: DynaLogger = new DynaLogger({bufferLimit: 200});
-  logger.on('log', (log: ILog) => collectedLogs.push(log));
+  const logger: DynaLogger = new DynaLogger({
+    bufferLimit: 200,
+    onLog:(log: ILog) => collectedLogs.push(log),
+  });
 
   it('should log', () => {
     logger.log('test', 'message1', {test:1});
