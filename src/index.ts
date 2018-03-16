@@ -4,7 +4,6 @@ export interface ILog {
 	date: Date;
 	type: ELogType;
 	text: string; // stringified parameters, used in logs property
-	raw: any[];   // contains the parameters as received
 	data: any;
 }
 
@@ -138,7 +137,7 @@ export class DynaLogger extends EventEmitter {
 		if (section) consoleOutput.push(section);
 		if (this._config.consoleTimestamp) consoleOutput.push(now.toLocaleString());
 		consoleOutput = consoleOutput.concat(userText);
-		const log: ILog = {date: now, type, text: this._stringifyConsoleParams(consoleOutput), data, raw: userText};
+		const log: ILog = {date: now, type, text: this._stringifyConsoleParams(consoleOutput), data: userText};
 
 		if (data) consoleOutput.push(data);
 
