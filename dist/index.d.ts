@@ -1,18 +1,3 @@
-import { EventEmitter } from 'eventemitter3';
-export interface ILog {
-    date: Date;
-    type: string;
-    text: string;
-    raw: string;
-    data: any;
-}
-export interface ITypes {
-    log: string;
-    info: string;
-    error: string;
-    warn: string;
-    debug: string;
-}
 export interface IConfig {
     bufferLimit?: number;
     consoleLogs?: boolean;
@@ -20,22 +5,42 @@ export interface IConfig {
     consoleErrorLogs?: boolean;
     consoleWarnLogs?: boolean;
     consoleDebugLogs?: boolean;
+    consoleLogType?: boolean;
+    consoleTimestamp?: boolean;
     keepLogs?: boolean;
     keepInfoLogs?: boolean;
     keepErrorLogs?: boolean;
     keepWarnLogs?: boolean;
     keepDebugLogs?: boolean;
+    replaceGlobalLogMethods?: boolean;
+    onLog?: (log: ILog) => void;
+}
+export interface ILog {
+    date: Date;
+    type: ELogType;
+    text: string;
+    data: any;
+}
+export declare enum ELogType {
+    LOG = "LOG",
+    INFO = "INFO",
+    ERROR = "ERROR",
+    WARN = "WARN",
+    DEBUG = "DEBUG",
 }
 export interface IEvents {
     log: string;
 }
-export declare class DynaLogger extends EventEmitter {
+export declare class DynaLogger {
     constructor(config?: IConfig);
     private _config;
     private _logs;
     setConfig(config?: IConfig): void;
+    private _realConsole;
+    destroy(): void;
     events: IEvents;
-    types: ITypes;
+    private _replaceGlobalLog();
+    private _restoreGlobalLog();
     readonly logs: ILog[];
     log(section: string, message: string, data?: any): void;
     info(section: string, message: string, data?: any): void;
@@ -44,5 +49,5 @@ export declare class DynaLogger extends EventEmitter {
     debug(section: string, message: string, data?: any): void;
     clear(type?: string): void;
     private _log(type, section, text_?, data?);
-    private _createMessage(section, type, text, date);
+    private _stringifyConsoleParams(params);
 }
