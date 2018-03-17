@@ -64,16 +64,34 @@ describe('Dyna logger, clear method test', () => {
     logger.log('test', 'message1', {test: 1});
     logger.clear(ELogType.DEBUG);
     expect(logger.logs.length).toBe(1);
-    debugger;
   });
 });
 
 describe('Dyna logger, replace native console', () => {
-  const logger: DynaLogger = new DynaLogger({
-    bufferLimit: -1,
-    replaceGlobalLogMethods: true,
-  });
+	let logger: DynaLogger;
+	let realConsoleLogMethod: any;
 
-  debugger;
-  console.log('something', {a:1});
+	it('save the console method reference', () => {
+		realConsoleLogMethod = console.log;
+	});
+
+	it('should load the logger', () => {
+		logger = new DynaLogger({
+			bufferLimit: -1,
+			replaceGlobalLogMethods: true,
+		});
+		expect(!!logger).toBe(true);
+	});
+
+	it('should global console different',()=>{
+		expect(realConsoleLogMethod).not.toBe(console.log);
+	});
+
+	it('should destroy logger',()=>{
+		logger.destroy();
+	});
+
+	it('should restore the global console method',()=>{
+		expect(realConsoleLogMethod).toBe(console.log);
+	});
 });

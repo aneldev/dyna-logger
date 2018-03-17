@@ -31,10 +31,6 @@ export enum ELogType {
 	DEBUG = 'DEBUG',
 }
 
-export interface IEvents {
-	log: string;
-}
-
 export class DynaLogger {
 	constructor(config: IConfig = {}) {
 		this.setConfig(config);
@@ -75,10 +71,6 @@ export class DynaLogger {
 			this._restoreGlobalLog();
 		}
 	}
-
-	public events: IEvents = {
-		log: 'log',
-	};
 
 	private _replaceGlobalLog(): void {
 		global.console.log = (...params: any[]): void => this._log(ELogType.LOG, null, params);

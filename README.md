@@ -6,7 +6,7 @@ Written in Typescript, runs everywhere.
 
 # Usage
 
-## Collected the logs in this array, listening on 'log' event
+## Collected the logs in this array
 
 ``` 
 const collectedLogs = [];
@@ -25,7 +25,7 @@ console.log(logger.logs.length); 	// consoles 2
 
 ``` 
 
-## Collected the logs of whole process in an array, listening on 'log' event
+## Collected the logs of whole process in an array
 
 ``` 
 const collectedLogs = [];
@@ -82,6 +82,12 @@ Consoles a warn.
 
 Consoles a debug.
 
+## setConfig(partialConfig: IConfig): void
+
+Pass partial or whole config on runtime to the logger.
+
+Note that `replaceGlobalLogMethods` is ignored here, only on constructor this has effect.  
+
 ## destroy(): void
 
 Shut's down the logger.
@@ -91,12 +97,6 @@ If `replaceGlobalLogMethods` is set to true, call `destroy()` is restoring the o
 # Properties
 
 ## logs: ILog[]
-
-# Events
-
-## log
-
-Returns a ILog
 
 # Interfaces
 
