@@ -104,9 +104,6 @@ var DynaLogger = /** @class */ (function () {
         if (config === void 0) { config = {}; }
         this._logs = [];
         this._realConsole = __assign({}, global.console);
-        this.events = {
-            log: 'log',
-        };
         this.setConfig(config);
         if (this._config.replaceGlobalLogMethods) {
             this._replaceGlobalLog();

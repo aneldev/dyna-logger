@@ -28,9 +28,6 @@ export declare enum ELogType {
     WARN = "WARN",
     DEBUG = "DEBUG",
 }
-export interface IEvents {
-    log: string;
-}
 export declare class DynaLogger {
     constructor(config?: IConfig);
     private _config;
@@ -38,7 +35,6 @@ export declare class DynaLogger {
     setConfig(config?: IConfig): void;
     private _realConsole;
     destroy(): void;
-    events: IEvents;
     private _replaceGlobalLog();
     private _restoreGlobalLog();
     readonly logs: ILog[];
