@@ -223,15 +223,15 @@ var DynaLogger = /** @class */ (function () {
         if (type == ELogType.DEBUG && this._config.keepDebugLogs)
             this._logs.push(log);
         // console it
-        if (type == ELogType.LOG && this._config.consoleLogs)
+        if (type == ELogType.LOG && this._config.consoleLogs && this._realConsole.log)
             (_a = this._realConsole).log.apply(_a, consoleOutput);
-        if (type == ELogType.INFO && this._config.consoleInfoLogs)
+        if (type == ELogType.INFO && this._config.consoleInfoLogs && this._realConsole.info)
             (_b = this._realConsole).info.apply(_b, consoleOutput);
-        if (type == ELogType.ERROR && this._config.consoleErrorLogs)
+        if (type == ELogType.ERROR && this._config.consoleErrorLogs && this._realConsole.error)
             (_c = this._realConsole).error.apply(_c, consoleOutput);
-        if (type == ELogType.WARN && this._config.consoleWarnLogs)
+        if (type == ELogType.WARN && this._config.consoleWarnLogs && this._realConsole.warn)
             (_d = this._realConsole).warn.apply(_d, consoleOutput);
-        if (type == ELogType.DEBUG && this._config.consoleDebugLogs)
+        if (type == ELogType.DEBUG && this._config.consoleDebugLogs && this._realConsole.debug)
             (_e = this._realConsole).debug.apply(_e, consoleOutput);
         // keep the bufferLimit
         if (this._config.bufferLimit > -1) {

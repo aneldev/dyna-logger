@@ -139,11 +139,11 @@ export class DynaLogger {
 		if (type == ELogType.DEBUG && this._config.keepDebugLogs) this._logs.push(log);
 
 		// console it
-		if (type == ELogType.LOG && this._config.consoleLogs) this._realConsole.log(...consoleOutput);
-		if (type == ELogType.INFO && this._config.consoleInfoLogs) this._realConsole.info(...consoleOutput);
-		if (type == ELogType.ERROR && this._config.consoleErrorLogs) this._realConsole.error(...consoleOutput);
-		if (type == ELogType.WARN && this._config.consoleWarnLogs) this._realConsole.warn(...consoleOutput);
-		if (type == ELogType.DEBUG && this._config.consoleDebugLogs) (this._realConsole.debug)(...consoleOutput);
+		if (type == ELogType.LOG && this._config.consoleLogs && this._realConsole.log) this._realConsole.log(...consoleOutput);
+		if (type == ELogType.INFO && this._config.consoleInfoLogs && this._realConsole.info) this._realConsole.info(...consoleOutput);
+		if (type == ELogType.ERROR && this._config.consoleErrorLogs && this._realConsole.error) this._realConsole.error(...consoleOutput);
+		if (type == ELogType.WARN && this._config.consoleWarnLogs && this._realConsole.warn) this._realConsole.warn(...consoleOutput);
+		if (type == ELogType.DEBUG && this._config.consoleDebugLogs && this._realConsole.debug) (this._realConsole.debug)(...consoleOutput);
 
 		// keep the bufferLimit
 		if (this._config.bufferLimit > -1) {

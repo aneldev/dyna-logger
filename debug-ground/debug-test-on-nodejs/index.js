@@ -111,9 +111,6 @@ var DynaLogger = /** @class */ (function () {
         if (config === void 0) { config = {}; }
         this._logs = [];
         this._realConsole = __assign({}, global.console);
-        this.events = {
-            log: 'log',
-        };
         this.setConfig(config);
         if (this._config.replaceGlobalLogMethods) {
             this._replaceGlobalLog();
@@ -233,15 +230,15 @@ var DynaLogger = /** @class */ (function () {
         if (type == ELogType.DEBUG && this._config.keepDebugLogs)
             this._logs.push(log);
         // console it
-        if (type == ELogType.LOG && this._config.consoleLogs)
+        if (type == ELogType.LOG && this._config.consoleLogs && this._realConsole.log)
             (_a = this._realConsole).log.apply(_a, consoleOutput);
-        if (type == ELogType.INFO && this._config.consoleInfoLogs)
+        if (type == ELogType.INFO && this._config.consoleInfoLogs && this._realConsole.info)
             (_b = this._realConsole).info.apply(_b, consoleOutput);
-        if (type == ELogType.ERROR && this._config.consoleErrorLogs)
+        if (type == ELogType.ERROR && this._config.consoleErrorLogs && this._realConsole.error)
             (_c = this._realConsole).error.apply(_c, consoleOutput);
-        if (type == ELogType.WARN && this._config.consoleWarnLogs)
+        if (type == ELogType.WARN && this._config.consoleWarnLogs && this._realConsole.warn)
             (_d = this._realConsole).warn.apply(_d, consoleOutput);
-        if (type == ELogType.DEBUG && this._config.consoleDebugLogs)
+        if (type == ELogType.DEBUG && this._config.consoleDebugLogs && this._realConsole.debug)
             (_e = this._realConsole).debug.apply(_e, consoleOutput);
         // keep the bufferLimit
         if (this._config.bufferLimit > -1) {
@@ -344,16 +341,30 @@ describe('Dyna logger, clear method test', function () {
         logger.log('test', 'message1', { test: 1 });
         logger.clear(index_1.ELogType.DEBUG);
         expect(logger.logs.length).toBe(1);
-        debugger;
     });
 });
 describe('Dyna logger, replace native console', function () {
-    var logger = new index_1.DynaLogger({
-        bufferLimit: -1,
-        replaceGlobalLogMethods: true,
+    var logger;
+    var realConsoleLogMethod;
+    it('save the console method reference', function () {
+        realConsoleLogMethod = console.log;
     });
-    debugger;
-    console.log('something', { a: 1 });
+    it('should load the logger', function () {
+        logger = new index_1.DynaLogger({
+            bufferLimit: -1,
+            replaceGlobalLogMethods: true,
+        });
+        expect(!!logger).toBe(true);
+    });
+    it('should global console different', function () {
+        expect(realConsoleLogMethod).not.toBe(console.log);
+    });
+    it('should destroy logger', function () {
+        logger.destroy();
+    });
+    it('should restore the global console method', function () {
+        expect(realConsoleLogMethod).toBe(console.log);
+    });
 });
 
 
@@ -491,6 +502,12 @@ function executeIts(its, cbCompleted) {
 	}
 }
 
+function exit(code) {
+	if (typeof process !== 'undefined' && typeof process.exit !== 'undefined') {
+		process.exit(code);
+	}
+}
+
 function finished() {
 	var report = 'All TEST finished, results:' + ' ' + 'errors:' + ' ' + global._mockJest.errors + ' ' + 'passed:' + ' ' + global._mockJest.passed;
 	console.log('');
@@ -500,14 +517,14 @@ function finished() {
 		console.log('   xxx   ');
 		console.log('  xx xx  ');
 		console.log(' xx   xx ' + report);
-		process.exit(100);
+		exit(100);
 	} else {
 		console.log('      vv');
 		console.log('     vv');
 		console.log('vv  vv');
 		console.log(' vvvv');
 		console.log('  vv      ' + report);
-		process.exit(0);
+		exit(0);
 	}
 }
 
