@@ -99,11 +99,12 @@ var ELogType;
     ELogType["WARN"] = "WARN";
     ELogType["DEBUG"] = "DEBUG";
 })(ELogType = exports.ELogType || (exports.ELogType = {}));
+var clientGlobal = (window || global);
 var DynaLogger = /** @class */ (function () {
     function DynaLogger(config) {
         if (config === void 0) { config = {}; }
         this._logs = [];
-        this._realConsole = __assign({}, global.console);
+        this._realConsole = __assign({}, clientGlobal.console);
         this.setConfig(config);
         if (this._config.replaceGlobalLogMethods) {
             this._replaceGlobalLog();
@@ -120,35 +121,35 @@ var DynaLogger = /** @class */ (function () {
     };
     DynaLogger.prototype._replaceGlobalLog = function () {
         var _this = this;
-        global.console.log = function () {
+        clientGlobal.console.log = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
             return _this._log(ELogType.LOG, null, params);
         };
-        global.console.info = function () {
+        clientGlobal.console.info = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
             return _this._log(ELogType.INFO, null, params);
         };
-        global.console.error = function () {
+        clientGlobal.console.error = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
             return _this._log(ELogType.ERROR, null, params);
         };
-        global.console.warn = function () {
+        clientGlobal.console.warn = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
             return _this._log(ELogType.WARN, null, params);
         };
-        global.console.debug = function () {
+        clientGlobal.console.debug = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
@@ -157,7 +158,7 @@ var DynaLogger = /** @class */ (function () {
         };
     };
     DynaLogger.prototype._restoreGlobalLog = function () {
-        global.console = __assign({}, global.console, this._realConsole);
+        clientGlobal.console = __assign({}, clientGlobal.console, this._realConsole);
     };
     Object.defineProperty(DynaLogger.prototype, "logs", {
         get: function () {

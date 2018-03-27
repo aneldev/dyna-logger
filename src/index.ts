@@ -31,6 +31,8 @@ export enum ELogType {
 	DEBUG = 'DEBUG',
 }
 
+const clientGlobal: any = (window || global) as Window;
+
 export class DynaLogger {
 	constructor(config: IConfig = {}) {
 		this.setConfig(config);
@@ -64,7 +66,7 @@ export class DynaLogger {
 		};
 	}
 
-	private _realConsole: Console = {...global.console};
+	private _realConsole: Console = {...clientGlobal.console};
 
 	public destroy(): void {
 		if (this._config.replaceGlobalLogMethods) {
@@ -73,16 +75,16 @@ export class DynaLogger {
 	}
 
 	private _replaceGlobalLog(): void {
-		global.console.log = (...params: any[]): void => this._log(ELogType.LOG, null, params);
-		global.console.info = (...params: any[]): void => this._log(ELogType.INFO, null, params);
-		global.console.error = (...params: any[]): void => this._log(ELogType.ERROR, null, params);
-		global.console.warn = (...params: any[]): void => this._log(ELogType.WARN, null, params);
-		global.console.debug = (...params: any[]): void => this._log(ELogType.DEBUG, null, params);
+		clientGlobal.console.log = (...params: any[]): void => this._log(ELogType.LOG, null, params);
+		clientGlobal.console.info = (...params: any[]): void => this._log(ELogType.INFO, null, params);
+		clientGlobal.console.error = (...params: any[]): void => this._log(ELogType.ERROR, null, params);
+		clientGlobal.console.warn = (...params: any[]): void => this._log(ELogType.WARN, null, params);
+		clientGlobal.console.debug = (...params: any[]): void => this._log(ELogType.DEBUG, null, params);
 	}
 
 	private _restoreGlobalLog(): void {
-		global.console = {
-			...global.console,
+		clientGlobal.console = {
+			...clientGlobal.console,
 			...this._realConsole,
 		}
 	}
@@ -170,5 +172,4 @@ export class DynaLogger {
 			return acc;
 		}, '');
 	}
-
 }
