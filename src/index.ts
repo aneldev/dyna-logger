@@ -129,7 +129,7 @@ export class DynaLogger {
 		if (section) consoleOutput.push(section);
 		if (this._config.consoleTimestamp) consoleOutput.push(now.toLocaleString());
 		consoleOutput = consoleOutput.concat(userText);
-		const log: ILog = {date: now, type, text: this._stringifyConsoleParams(consoleOutput), data: userText};
+		const log: ILog = {date: now, type, text: this._stringifyConsoleParams(consoleOutput), data};
 
 		if (data) consoleOutput.push(data);
 

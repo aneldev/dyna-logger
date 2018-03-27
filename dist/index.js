@@ -209,7 +209,7 @@ var DynaLogger = /** @class */ (function () {
         if (this._config.consoleTimestamp)
             consoleOutput.push(now.toLocaleString());
         consoleOutput = consoleOutput.concat(userText);
-        var log = { date: now, type: type, text: this._stringifyConsoleParams(consoleOutput), data: userText };
+        var log = { date: now, type: type, text: this._stringifyConsoleParams(consoleOutput), data: data };
         if (data)
             consoleOutput.push(data);
         // add to _logs
