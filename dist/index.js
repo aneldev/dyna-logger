@@ -126,35 +126,35 @@ var DynaLogger = /** @class */ (function () {
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.LOG, null, params);
+            return _this._log(ELogType.LOG, null, params, params);
         };
         clientGlobal.console.info = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.INFO, null, params);
+            return _this._log(ELogType.INFO, null, params, params);
         };
         clientGlobal.console.error = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.ERROR, null, params);
+            return _this._log(ELogType.ERROR, null, params, params);
         };
         clientGlobal.console.warn = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.WARN, null, params);
+            return _this._log(ELogType.WARN, null, params, params);
         };
         clientGlobal.console.debug = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.DEBUG, null, params);
+            return _this._log(ELogType.DEBUG, null, params, params);
         };
     };
     DynaLogger.prototype._restoreGlobalLog = function () {
