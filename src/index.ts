@@ -75,11 +75,11 @@ export class DynaLogger {
 	}
 
 	private _replaceGlobalLog(): void {
-		clientGlobal.console.log = (...params: any[]): void => this._log(ELogType.LOG, null, params);
-		clientGlobal.console.info = (...params: any[]): void => this._log(ELogType.INFO, null, params);
-		clientGlobal.console.error = (...params: any[]): void => this._log(ELogType.ERROR, null, params);
-		clientGlobal.console.warn = (...params: any[]): void => this._log(ELogType.WARN, null, params);
-		clientGlobal.console.debug = (...params: any[]): void => this._log(ELogType.DEBUG, null, params);
+		clientGlobal.console.log = (...params: any[]): void => this._log(ELogType.LOG, null, params, params);
+		clientGlobal.console.info = (...params: any[]): void => this._log(ELogType.INFO, null, params, params);
+		clientGlobal.console.error = (...params: any[]): void => this._log(ELogType.ERROR, null, params, params);
+		clientGlobal.console.warn = (...params: any[]): void => this._log(ELogType.WARN, null, params, params);
+		clientGlobal.console.debug = (...params: any[]): void => this._log(ELogType.DEBUG, null, params, params);
 	}
 
 	private _restoreGlobalLog(): void {
