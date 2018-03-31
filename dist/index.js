@@ -143,35 +143,35 @@ var DynaLogger = /** @class */ (function () {
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.LOG, null, params, params);
+            return _this._log(ELogType.LOG, null, params, params, false);
         };
         dyna_universal_1.universal.console.info = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.INFO, null, params, params);
+            return _this._log(ELogType.INFO, null, params, params, false);
         };
         dyna_universal_1.universal.console.error = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.ERROR, null, params, params);
+            return _this._log(ELogType.ERROR, null, params, params, false);
         };
         dyna_universal_1.universal.console.warn = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.WARN, null, params, params);
+            return _this._log(ELogType.WARN, null, params, params, false);
         };
         dyna_universal_1.universal.console.debug = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.DEBUG, null, params, params);
+            return _this._log(ELogType.DEBUG, null, params, params, false);
         };
     };
     DynaLogger.prototype._restoreGlobalLog = function () {
