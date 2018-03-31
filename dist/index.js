@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
+		module.exports = factory(require("dyna-universal"));
 	else if(typeof define === 'function' && define.amd)
-		define("dyna-logger", [], factory);
+		define("dyna-logger", ["dyna-universal"], factory);
 	else if(typeof exports === 'object')
-		exports["dyna-logger"] = factory();
+		exports["dyna-logger"] = factory(require("dyna-universal"));
 	else
-		root["dyna-logger"] = factory();
-})(this, function() {
+		root["dyna-logger"] = factory(root["dyna-universal"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -91,6 +91,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var dyna_universal_1 = __webpack_require__(1);
 var ELogType;
 (function (ELogType) {
     ELogType["LOG"] = "LOG";
@@ -99,7 +100,6 @@ var ELogType;
     ELogType["WARN"] = "WARN";
     ELogType["DEBUG"] = "DEBUG";
 })(ELogType = exports.ELogType || (exports.ELogType = {}));
-var clientGlobal = (typeof window !== "undefined" && window || global);
 var DynaLogger = /** @class */ (function () {
     function DynaLogger(config) {
         if (config === void 0) { config = {}; }
@@ -121,7 +121,7 @@ var DynaLogger = /** @class */ (function () {
             onLog: function (log) { return undefined; },
         };
         this._logs = [];
-        this._realConsole = __assign({}, clientGlobal.console);
+        this._realConsole = __assign({}, dyna_universal_1.universal.console);
         this.setConfig(config);
         if (this._config.replaceGlobalLogMethods) {
             this._replaceGlobalLog();
@@ -138,45 +138,48 @@ var DynaLogger = /** @class */ (function () {
     };
     DynaLogger.prototype._replaceGlobalLog = function () {
         var _this = this;
-        clientGlobal.console = __assign({}, clientGlobal.console);
-        clientGlobal.console.log = function () {
+        dyna_universal_1.universal.console.log = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.LOG, null, params, params, false);
+            return _this._log(ELogType.LOG, null, params, params);
         };
-        clientGlobal.console.info = function () {
+        dyna_universal_1.universal.console.info = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.INFO, null, params, params, false);
+            return _this._log(ELogType.INFO, null, params, params);
         };
-        clientGlobal.console.error = function () {
+        dyna_universal_1.universal.console.error = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.ERROR, null, params, params, false);
+            return _this._log(ELogType.ERROR, null, params, params);
         };
-        clientGlobal.console.warn = function () {
+        dyna_universal_1.universal.console.warn = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.WARN, null, params, params, false);
+            return _this._log(ELogType.WARN, null, params, params);
         };
-        clientGlobal.console.debug = function () {
+        dyna_universal_1.universal.console.debug = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.DEBUG, null, params, params, false);
+            return _this._log(ELogType.DEBUG, null, params, params);
         };
     };
     DynaLogger.prototype._restoreGlobalLog = function () {
-        clientGlobal.console = __assign({}, clientGlobal.console, this._realConsole);
+        dyna_universal_1.universal.console.log = this._realConsole.log;
+        dyna_universal_1.universal.console.info = this._realConsole.info;
+        dyna_universal_1.universal.console.debug = this._realConsole.debug;
+        dyna_universal_1.universal.console.error = this._realConsole.error;
+        dyna_universal_1.universal.console.warn = this._realConsole.warn;
     };
     Object.defineProperty(DynaLogger.prototype, "logs", {
         get: function () {
@@ -289,6 +292,12 @@ exports.DynaLogger = DynaLogger;
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports) {
+
+module.exports = require("dyna-universal");
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(0);
