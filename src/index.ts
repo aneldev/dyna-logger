@@ -31,7 +31,7 @@ export enum ELogType {
 	DEBUG = 'DEBUG',
 }
 
-const clientGlobal: any = (window || global) as Window;
+const clientGlobal: any = (typeof window !== "undefined" && window || global);
 
 export class DynaLogger {
 	constructor(config: IConfig = {}) {
@@ -42,26 +42,28 @@ export class DynaLogger {
 		}
 	}
 
-	private _config: IConfig;
-	private _logs: ILog[] = [];
+    private _config: IConfig = {
+        bufferLimit: 5000,
+        consoleLogs: true,
+        consoleInfoLogs: true,
+        consoleErrorLogs: true,
+        consoleWarnLogs: true,
+        consoleDebugLogs: true,
+        consoleLogType: true,
+        consoleTimestamp: true,
+        keepLogs: true,
+        keepInfoLogs: true,
+        keepErrorLogs: true,
+        keepWarnLogs: true,
+        keepDebugLogs: true,
+        replaceGlobalLogMethods: false,
+        onLog: (log: ILog) => undefined,
+    };
+    private _logs: ILog[] = [];
 
-	public setConfig(config: IConfig = {}): void {
-		this._config = {
-			bufferLimit: 5000,
-			consoleLogs: true,
-			consoleInfoLogs: true,
-			consoleErrorLogs: true,
-			consoleWarnLogs: true,
-			consoleDebugLogs: true,
-			consoleLogType: true,
-			consoleTimestamp: true,
-			keepLogs: true,
-			keepInfoLogs: true,
-			keepErrorLogs: true,
-			keepWarnLogs: true,
-			keepDebugLogs: true,
-			replaceGlobalLogMethods: false,
-			onLog: (log: ILog) => undefined,
+    public setConfig(config: IConfig = {}): void {
+        this._config = {
+            ...this._config,
 			...config,
 		};
 	}
@@ -75,11 +77,14 @@ export class DynaLogger {
 	}
 
 	private _replaceGlobalLog(): void {
-		clientGlobal.console.log = (...params: any[]): void => this._log(ELogType.LOG, null, params, params);
-		clientGlobal.console.info = (...params: any[]): void => this._log(ELogType.INFO, null, params, params);
-		clientGlobal.console.error = (...params: any[]): void => this._log(ELogType.ERROR, null, params, params);
-		clientGlobal.console.warn = (...params: any[]): void => this._log(ELogType.WARN, null, params, params);
-		clientGlobal.console.debug = (...params: any[]): void => this._log(ELogType.DEBUG, null, params, params);
+        clientGlobal.console = {
+            ...clientGlobal.console,
+        };
+        clientGlobal.console.log = (...params: any[]): void => this._log(ELogType.LOG, null, params, params, false);
+        clientGlobal.console.info = (...params: any[]): void => this._log(ELogType.INFO, null, params, params, false);
+        clientGlobal.console.error = (...params: any[]): void => this._log(ELogType.ERROR, null, params, params, false);
+        clientGlobal.console.warn = (...params: any[]): void => this._log(ELogType.WARN, null, params, params, false);
+        clientGlobal.console.debug = (...params: any[]): void => this._log(ELogType.DEBUG, null, params, params, false);
 	}
 
 	private _restoreGlobalLog(): void {
@@ -120,7 +125,7 @@ export class DynaLogger {
 			this._logs = [];
 	}
 
-	private _log(type: ELogType, section: string, text_: string | any[] = '', data?: any): void {
+    private _log(type: ELogType, section: string, text_: string | any[] = '', data?: any, consoleTheData: boolean = true): void {
 		let consoleOutput: any[] = [];
 		const now: Date = new Date();
 		let userText: any[];
@@ -131,7 +136,7 @@ export class DynaLogger {
 		consoleOutput = consoleOutput.concat(userText);
 		const log: ILog = {date: now, type, text: this._stringifyConsoleParams(consoleOutput), data};
 
-		if (data) consoleOutput.push(data);
+        if (data && consoleTheData) consoleOutput.push(data);
 
 		// add to _logs
 		if (type == ELogType.LOG && this._config.keepLogs) this._logs.push(log);

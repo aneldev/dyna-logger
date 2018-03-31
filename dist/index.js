@@ -103,6 +103,23 @@ var clientGlobal = (window || global);
 var DynaLogger = /** @class */ (function () {
     function DynaLogger(config) {
         if (config === void 0) { config = {}; }
+        this._config = {
+            bufferLimit: 5000,
+            consoleLogs: true,
+            consoleInfoLogs: true,
+            consoleErrorLogs: true,
+            consoleWarnLogs: true,
+            consoleDebugLogs: true,
+            consoleLogType: true,
+            consoleTimestamp: true,
+            keepLogs: true,
+            keepInfoLogs: true,
+            keepErrorLogs: true,
+            keepWarnLogs: true,
+            keepDebugLogs: true,
+            replaceGlobalLogMethods: false,
+            onLog: function (log) { return undefined; },
+        };
         this._logs = [];
         this._realConsole = __assign({}, clientGlobal.console);
         this.setConfig(config);
@@ -112,7 +129,7 @@ var DynaLogger = /** @class */ (function () {
     }
     DynaLogger.prototype.setConfig = function (config) {
         if (config === void 0) { config = {}; }
-        this._config = __assign({ bufferLimit: 5000, consoleLogs: true, consoleInfoLogs: true, consoleErrorLogs: true, consoleWarnLogs: true, consoleDebugLogs: true, consoleLogType: true, consoleTimestamp: true, keepLogs: true, keepInfoLogs: true, keepErrorLogs: true, keepWarnLogs: true, keepDebugLogs: true, replaceGlobalLogMethods: false, onLog: function (log) { return undefined; } }, config);
+        this._config = __assign({}, this._config, config);
     };
     DynaLogger.prototype.destroy = function () {
         if (this._config.replaceGlobalLogMethods) {
@@ -121,40 +138,41 @@ var DynaLogger = /** @class */ (function () {
     };
     DynaLogger.prototype._replaceGlobalLog = function () {
         var _this = this;
+        clientGlobal.console = __assign({}, clientGlobal.console);
         clientGlobal.console.log = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.LOG, null, params, params);
+            return _this._log(ELogType.LOG, null, params, params, false);
         };
         clientGlobal.console.info = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.INFO, null, params, params);
+            return _this._log(ELogType.INFO, null, params, params, false);
         };
         clientGlobal.console.error = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.ERROR, null, params, params);
+            return _this._log(ELogType.ERROR, null, params, params, false);
         };
         clientGlobal.console.warn = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.WARN, null, params, params);
+            return _this._log(ELogType.WARN, null, params, params, false);
         };
         clientGlobal.console.debug = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.DEBUG, null, params, params);
+            return _this._log(ELogType.DEBUG, null, params, params, false);
         };
     };
     DynaLogger.prototype._restoreGlobalLog = function () {
@@ -193,8 +211,9 @@ var DynaLogger = /** @class */ (function () {
         else
             this._logs = [];
     };
-    DynaLogger.prototype._log = function (type, section, text_, data) {
+    DynaLogger.prototype._log = function (type, section, text_, data, consoleTheData) {
         if (text_ === void 0) { text_ = ''; }
+        if (consoleTheData === void 0) { consoleTheData = true; }
         var consoleOutput = [];
         var now = new Date();
         var userText;
@@ -210,7 +229,7 @@ var DynaLogger = /** @class */ (function () {
             consoleOutput.push(now.toLocaleString());
         consoleOutput = consoleOutput.concat(userText);
         var log = { date: now, type: type, text: this._stringifyConsoleParams(consoleOutput), data: data };
-        if (data)
+        if (data && consoleTheData)
             consoleOutput.push(data);
         // add to _logs
         if (type == ELogType.LOG && this._config.keepLogs)

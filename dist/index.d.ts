@@ -44,6 +44,6 @@ export declare class DynaLogger {
     warn(section: string, message: string, data?: any): void;
     debug(section: string, message: string, data?: any): void;
     clear(type?: string): void;
-    private _log(type, section, text_?, data?);
+    private _log(type, section, text_?, data?, consoleTheData?);
     private _stringifyConsoleParams(params);
 }
