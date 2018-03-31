@@ -99,7 +99,7 @@ var ELogType;
     ELogType["WARN"] = "WARN";
     ELogType["DEBUG"] = "DEBUG";
 })(ELogType = exports.ELogType || (exports.ELogType = {}));
-var clientGlobal = (window || global);
+var clientGlobal = (typeof window !== "undefined" && window || global);
 var DynaLogger = /** @class */ (function () {
     function DynaLogger(config) {
         if (config === void 0) { config = {}; }
