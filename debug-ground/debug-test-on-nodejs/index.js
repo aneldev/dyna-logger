@@ -150,35 +150,35 @@ var DynaLogger = /** @class */ (function () {
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.LOG, null, params, params);
+            return _this._log(ELogType.LOG, null, params, params, false);
         };
         dyna_universal_1.universal.console.info = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.INFO, null, params, params);
+            return _this._log(ELogType.INFO, null, params, params, false);
         };
         dyna_universal_1.universal.console.error = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.ERROR, null, params, params);
+            return _this._log(ELogType.ERROR, null, params, params, false);
         };
         dyna_universal_1.universal.console.warn = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.WARN, null, params, params);
+            return _this._log(ELogType.WARN, null, params, params, false);
         };
         dyna_universal_1.universal.console.debug = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.DEBUG, null, params, params);
+            return _this._log(ELogType.DEBUG, null, params, params, false);
         };
     };
     DynaLogger.prototype._restoreGlobalLog = function () {
@@ -224,6 +224,7 @@ var DynaLogger = /** @class */ (function () {
     DynaLogger.prototype._log = function (type, section, text_, data, consoleTheData) {
         if (text_ === void 0) { text_ = ''; }
         if (consoleTheData === void 0) { consoleTheData = true; }
+        var _a, _b, _c, _d, _e;
         var consoleOutput = [];
         var now = new Date();
         var userText;
@@ -279,7 +280,6 @@ var DynaLogger = /** @class */ (function () {
             }
         }
         this._config.onLog(log);
-        var _a, _b, _c, _d, _e;
     };
     DynaLogger.prototype._stringifyConsoleParams = function (params) {
         return params.reduce(function (acc, value) {

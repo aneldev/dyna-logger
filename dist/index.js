@@ -7,7 +7,7 @@
 		exports["dyna-logger"] = factory(require("dyna-universal"));
 	else
 		root["dyna-logger"] = factory(root["dyna-universal"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_0__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -73,11 +73,17 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports) {
+
+module.exports = require("dyna-universal");
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -91,7 +97,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var dyna_universal_1 = __webpack_require__(1);
+var dyna_universal_1 = __webpack_require__(0);
 var ELogType;
 (function (ELogType) {
     ELogType["LOG"] = "LOG";
@@ -217,6 +223,7 @@ var DynaLogger = /** @class */ (function () {
     DynaLogger.prototype._log = function (type, section, text_, data, consoleTheData) {
         if (text_ === void 0) { text_ = ''; }
         if (consoleTheData === void 0) { consoleTheData = true; }
+        var _a, _b, _c, _d, _e;
         var consoleOutput = [];
         var now = new Date();
         var userText;
@@ -272,7 +279,6 @@ var DynaLogger = /** @class */ (function () {
             }
         }
         this._config.onLog(log);
-        var _a, _b, _c, _d, _e;
     };
     DynaLogger.prototype._stringifyConsoleParams = function (params) {
         return params.reduce(function (acc, value) {
@@ -288,19 +294,6 @@ var DynaLogger = /** @class */ (function () {
     return DynaLogger;
 }());
 exports.DynaLogger = DynaLogger;
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-module.exports = require("dyna-universal");
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(0);
 
 
 /***/ })

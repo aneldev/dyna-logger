@@ -1,4 +1,4 @@
-export interface IConfig {
+export interface IDynaLoggerConfig {
     bufferLimit?: number;
     consoleLogs?: boolean;
     consoleInfoLogs?: boolean;
@@ -26,17 +26,17 @@ export declare enum ELogType {
     INFO = "INFO",
     ERROR = "ERROR",
     WARN = "WARN",
-    DEBUG = "DEBUG",
+    DEBUG = "DEBUG"
 }
 export declare class DynaLogger {
-    constructor(config?: IConfig);
+    constructor(config?: IDynaLoggerConfig);
     private _config;
     private _logs;
-    setConfig(config?: IConfig): void;
+    setConfig(config?: IDynaLoggerConfig): void;
     private _realConsole;
     destroy(): void;
-    private _replaceGlobalLog();
-    private _restoreGlobalLog();
+    private _replaceGlobalLog;
+    private _restoreGlobalLog;
     readonly logs: ILog[];
     log(section: string, message: string, data?: any): void;
     info(section: string, message: string, data?: any): void;
@@ -44,6 +44,6 @@ export declare class DynaLogger {
     warn(section: string, message: string, data?: any): void;
     debug(section: string, message: string, data?: any): void;
     clear(type?: string): void;
-    private _log(type, section, text_?, data?, consoleTheData?);
-    private _stringifyConsoleParams(params);
+    private _log;
+    private _stringifyConsoleParams;
 }
