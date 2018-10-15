@@ -1,6 +1,6 @@
 import {universal} from "dyna-universal";
 
-export interface IConfig {
+export interface IDynaLoggerConfig {
 	bufferLimit?: number;
 	consoleLogs?: boolean;
 	consoleInfoLogs?: boolean;
@@ -34,7 +34,7 @@ export enum ELogType {
 }
 
 export class DynaLogger {
-	constructor(config: IConfig = {}) {
+	constructor(config: IDynaLoggerConfig = {}) {
 		this.setConfig(config);
 
 		if (this._config.replaceGlobalLogMethods) {
@@ -42,7 +42,7 @@ export class DynaLogger {
 		}
 	}
 
-	private _config: IConfig = {
+	private _config: IDynaLoggerConfig = {
 		bufferLimit: 5000,
 		consoleLogs: true,
 		consoleInfoLogs: true,
@@ -61,7 +61,7 @@ export class DynaLogger {
 	};
 	private _logs: ILog[] = [];
 
-	public setConfig(config: IConfig = {}): void {
+	public setConfig(config: IDynaLoggerConfig = {}): void {
 		this._config = {
 			...this._config,
 			...config,
