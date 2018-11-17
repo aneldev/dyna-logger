@@ -7,7 +7,7 @@
 		exports["dyna-logger"] = factory();
 	else
 		root["dyna-logger"] = factory();
-})(global, function() {
+})(window, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -87,11 +87,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
 /******/
 /******/ 	// __webpack_public_path__
-/******/ 	__webpack_require__.p = "/dist/";
+/******/ 	__webpack_require__.p = "/";
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/index.ts");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/web.ts");
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -378,10 +378,10 @@ exports.DynaLogger = DynaLogger;
 
 /***/ }),
 
-/***/ "./src/index.ts":
-/*!**********************!*\
-  !*** ./src/index.ts ***!
-  \**********************/
+/***/ "./src/web.ts":
+/*!********************!*\
+  !*** ./src/web.ts ***!
+  \********************/
 /*! no static exports found */
 /*! all exports used */
 /***/ (function(module, exports, __webpack_require__) {
@@ -399,10 +399,8 @@ Object.defineProperty(exports, "__esModule", {
 
 __export(__webpack_require__(/*! ./DynaLogger */ "./src/DynaLogger.ts"));
 
-console.error("\ndyna-logger: Import error\nYou should import with lazy load (webpack's import()) the \"dyna-logger/web\" or the \"dyna-logger/node\" version according the runtime environment.\nFor typescript, you should import also on top the \"dyna-logger\" but on runtime you shouldn't see this error since this import is not part of the compiled code.\n");
-
 /***/ })
 
 /******/ });
 });
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=web.js.map
