@@ -125,7 +125,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-__webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module 'dyna-universal'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+__webpack_require__(/*! dyna-universal */ "dyna-universal");
 
 var universal = dynaUniversal.universal;
 var ELogType;
@@ -400,6 +400,18 @@ Object.defineProperty(exports, "__esModule", {
 __export(__webpack_require__(/*! ./DynaLogger */ "./src/DynaLogger.ts"));
 
 console.error("\ndyna-logger: Import error\nYou should import with lazy load (webpack's import()) the \"dyna-logger/web\" or the \"dyna-logger/node\" version according the runtime environment.\nFor typescript, you should import also on top the \"dyna-logger\" but on runtime you shouldn't see this error since this import is not part of the compiled code.\n");
+
+/***/ }),
+
+/***/ "dyna-universal":
+/*!*********************************!*\
+  !*** external "dyna-universal" ***!
+  \*********************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports) {
+
+module.exports = require("dyna-universal");
 
 /***/ })
 

@@ -125,7 +125,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-__webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module 'dyna-universal'"); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+__webpack_require__(/*! dyna-universal */ "dyna-universal");
 
 var universal = dynaUniversal.universal;
 var ELogType;
@@ -398,6 +398,18 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 __export(__webpack_require__(/*! ./DynaLogger */ "./src/DynaLogger.ts"));
+
+/***/ }),
+
+/***/ "dyna-universal":
+/*!*********************************!*\
+  !*** external "dyna-universal" ***!
+  \*********************************/
+/*! no static exports found */
+/*! all exports used */
+/***/ (function(module, exports) {
+
+module.exports = require("dyna-universal");
 
 /***/ })
 
