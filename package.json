@@ -40,7 +40,7 @@
     "test-watch": "jest --watch --verbose --runInBand",
     "commit": "git add -u && git add -A && git commit -m",
     "commit-amend": "git add -u && git add -A && git commit --amend --no-edit",
-    "publish-push": "git add -u && git add -A && git commit -m \"last minute changes\"; yarn publish && git push && git push --tags",
+    "publish-push": "git add -u && git add -A && git commit -m \"last minute changes\"; yarn version --patch && yarn publish && git push && git push --tags",
     "test-publish-push": "yarn test && yarn publish && git push && git push --tags",
     "update-release": "yarn upgrade && git add -u && git add -A && git commit -m \"last minute update-release changes\"; yarn run release",
     "reinstall": "rm ./yarn.lock rm -rf ./node_modules; yarn install",
