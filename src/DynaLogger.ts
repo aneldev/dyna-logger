@@ -95,7 +95,7 @@ export class DynaLogger {
   }
 
   public get logs(): ILog[] {
-    return [].concat(this._logs);
+    return this._logs.concat();
   }
 
   public log(section: string, message: string, data: any = null): void {
@@ -125,7 +125,7 @@ export class DynaLogger {
       this._logs = [];
   }
 
-  private _log(type: ELogType, section: string, text_: string | any[] = '', data?: any, consoleTheData: boolean = true): void {
+  private _log(type: ELogType, section: null | string, text_: string | any[] = '', data?: any, consoleTheData: boolean = true): void {
     let consoleOutput: any[] = [];
     const now: Date = new Date();
     let userText: any[];
@@ -153,7 +153,7 @@ export class DynaLogger {
     if (type == ELogType.DEBUG && this._config.consoleDebugLogs && this._realConsole.debug) (this._realConsole.debug)(...consoleOutput);
 
     // keep the bufferLimit
-    if (this._config.bufferLimit > -1) {
+    if (this._config.bufferLimit !== undefined && this._config.bufferLimit > -1) {
       // clean up
       while (this._logs.length > this._config.bufferLimit) this._logs.shift();
       // set the older with a proper message
@@ -167,7 +167,7 @@ export class DynaLogger {
       }
     }
 
-    this._config.onLog(log);
+    if (this._config.onLog) this._config.onLog(log);
   }
 
   private _stringifyConsoleParams(params: any[]): string {
