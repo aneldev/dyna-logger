@@ -1,1 +1,3 @@
-console.log('Debug application');
+import {DynaLogger} from "../src";
+
+(window as any).DynaLogger = DynaLogger;

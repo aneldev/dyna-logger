@@ -24,8 +24,7 @@ export interface IDynaLoggerConfig {
 export interface ILog {
   date: Date;
   type: ELogType;
-  text: string; // stringified parameters, used in logs property
-  data: any;
+  content: any;
 }
 
 export enum ELogType {
@@ -79,11 +78,11 @@ export class DynaLogger {
   }
 
   private _replaceGlobalLog(): void {
-    universal.console.log = (...params: any[]): void => this._log(ELogType.LOG, null, params, params, false);
-    universal.console.info = (...params: any[]): void => this._log(ELogType.INFO, null, params, params, false);
-    universal.console.error = (...params: any[]): void => this._log(ELogType.ERROR, null, params, params, false);
-    universal.console.warn = (...params: any[]): void => this._log(ELogType.WARN, null, params, params, false);
-    universal.console.debug = (...params: any[]): void => this._log(ELogType.DEBUG, null, params, params, false);
+    universal.console.log = (...params: any[]): void => this._log(ELogType.LOG, null, params, null, false);
+    universal.console.info = (...params: any[]): void => this._log(ELogType.INFO, null, params, null, false);
+    universal.console.error = (...params: any[]): void => this._log(ELogType.ERROR, null, params, null, false);
+    universal.console.warn = (...params: any[]): void => this._log(ELogType.WARN, null, params, null, false);
+    universal.console.debug = (...params: any[]): void => this._log(ELogType.DEBUG, null, params, null, false);
   }
 
   private _restoreGlobalLog(): void {
@@ -125,16 +124,30 @@ export class DynaLogger {
       this._logs = [];
   }
 
-  private _log(type: ELogType, section: null | string, text_: string | any[] = '', data?: any, consoleTheData: boolean = true): void {
-    let consoleOutput: any[] = [];
+  private _log(
+    type: ELogType,
+    section: null | string,
+    text_: string | any[] = '',
+    data?: any,
+    consoleTheData: boolean = true,
+  ): void {
     const now: Date = new Date();
+    let consoleOutput: any[] = [];
+
     let userText: any[];
     if (Array.isArray(text_)) userText = text_; else userText = [text_];
+
     if (this._config.consoleLogType) consoleOutput.push(type);
     if (section) consoleOutput.push(section);
     if (this._config.consoleTimestamp) consoleOutput.push(now.toLocaleString());
     consoleOutput = consoleOutput.concat(userText);
-    const log: ILog = {date: now, type, text: this._stringifyConsoleParams(consoleOutput), data};
+
+    const log: ILog = {
+      date: now,
+      type,
+      content: [consoleOutput],
+    };
+    if (data) log.content.push(data);
 
     if (data && consoleTheData) consoleOutput.push(data);
 
@@ -161,20 +174,11 @@ export class DynaLogger {
         this._logs[0] = {
           date: this._logs[0].date,
           type: ELogType.WARN,
-          text: `--- previous logs deleted due to bufferLimit: ${this._config.bufferLimit}`,
-          data: {config: this._config}
+          content: [`--- previous logs deleted due to bufferLimit: ${this._config.bufferLimit}`, {config: this._config}],
         } as ILog;
       }
     }
 
     if (this._config.onLog) this._config.onLog(log);
-  }
-
-  private _stringifyConsoleParams(params: any[]): string {
-    return params.reduce((acc: string, value: any) => {
-      if (acc.length) acc += " ";
-      if (typeof value === "string") acc += value; else acc += String(value);
-      return acc;
-    }, '');
   }
 }

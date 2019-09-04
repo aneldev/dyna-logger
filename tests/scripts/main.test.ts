@@ -1,11 +1,12 @@
-import {DynaLogger, ELogType, ILog} from "../../src";
+import "jest";
+// import {jasmine, describe, it, expect, fail} from "../../dyna/jest-light"
 
-declare let jasmine: any, describe: any, expect: any, it: any;
-if (typeof jasmine !== 'undefined') jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
+
+import {DynaLogger, ELogType, ILog} from "../../src";
 
 describe('Dyna logger i/o test', () => {
   const collectedLogs: ILog[] = [];
-
   const logger: DynaLogger = new DynaLogger({
     bufferLimit: 200,
     onLog:(log: ILog) => collectedLogs.push(log),

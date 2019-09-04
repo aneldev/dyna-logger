@@ -19,8 +19,7 @@ export interface IDynaLoggerConfig {
 export interface ILog {
     date: Date;
     type: ELogType;
-    text: string;
-    data: any;
+    content: any;
 }
 export declare enum ELogType {
     LOG = "LOG",
@@ -46,5 +45,4 @@ export declare class DynaLogger {
     debug(section: string, message: string, data?: any): void;
     clear(type?: string): void;
     private _log;
-    private _stringifyConsoleParams;
 }

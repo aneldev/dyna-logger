@@ -62,35 +62,35 @@ var DynaLogger = /** @class */ (function () {
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.LOG, null, params, params, false);
+            return _this._log(ELogType.LOG, null, params, null, false);
         };
         universal.console.info = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.INFO, null, params, params, false);
+            return _this._log(ELogType.INFO, null, params, null, false);
         };
         universal.console.error = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.ERROR, null, params, params, false);
+            return _this._log(ELogType.ERROR, null, params, null, false);
         };
         universal.console.warn = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.WARN, null, params, params, false);
+            return _this._log(ELogType.WARN, null, params, null, false);
         };
         universal.console.debug = function () {
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 params[_i] = arguments[_i];
             }
-            return _this._log(ELogType.DEBUG, null, params, params, false);
+            return _this._log(ELogType.DEBUG, null, params, null, false);
         };
     };
     DynaLogger.prototype._restoreGlobalLog = function () {
@@ -137,8 +137,8 @@ var DynaLogger = /** @class */ (function () {
         if (text_ === void 0) { text_ = ''; }
         if (consoleTheData === void 0) { consoleTheData = true; }
         var _a, _b, _c, _d, _e;
-        var consoleOutput = [];
         var now = new Date();
+        var consoleOutput = [];
         var userText;
         if (Array.isArray(text_))
             userText = text_;
@@ -151,7 +151,13 @@ var DynaLogger = /** @class */ (function () {
         if (this._config.consoleTimestamp)
             consoleOutput.push(now.toLocaleString());
         consoleOutput = consoleOutput.concat(userText);
-        var log = { date: now, type: type, text: this._stringifyConsoleParams(consoleOutput), data: data };
+        var log = {
+            date: now,
+            type: type,
+            content: [consoleOutput],
+        };
+        if (data)
+            log.content.push(data);
         if (data && consoleTheData)
             consoleOutput.push(data);
         // add to _logs
@@ -186,24 +192,12 @@ var DynaLogger = /** @class */ (function () {
                 this._logs[0] = {
                     date: this._logs[0].date,
                     type: ELogType.WARN,
-                    text: "--- previous logs deleted due to bufferLimit: " + this._config.bufferLimit,
-                    data: { config: this._config }
+                    content: ["--- previous logs deleted due to bufferLimit: " + this._config.bufferLimit, { config: this._config }],
                 };
             }
         }
         if (this._config.onLog)
             this._config.onLog(log);
-    };
-    DynaLogger.prototype._stringifyConsoleParams = function (params) {
-        return params.reduce(function (acc, value) {
-            if (acc.length)
-                acc += " ";
-            if (typeof value === "string")
-                acc += value;
-            else
-                acc += String(value);
-            return acc;
-        }, '');
     };
     return DynaLogger;
 }());
