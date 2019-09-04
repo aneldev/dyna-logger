@@ -105,9 +105,7 @@ If `replaceGlobalLogMethods` is set to true, call `destroy()` is restoring the o
    {
      date: Date;
      type: string;
-     text: string;  // include the section and date	
-     raw: string;	// contains only the source text
-     data: any;
+     content: any[];
    }
 ``` 
 
