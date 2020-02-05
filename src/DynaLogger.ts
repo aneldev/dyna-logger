@@ -145,7 +145,7 @@ export class DynaLogger {
     const log: ILog = {
       date: now,
       type,
-      content: [consoleOutput],
+      content: consoleOutput.concat(),
     };
     if (data) log.content.push(data);
 
