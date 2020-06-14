@@ -1,3 +1,5 @@
-import {DynaLogger} from "../src";
+import "dyna-node-console";
 
-(window as any).DynaLogger = DynaLogger;
+import "../dyna/unhandledPromiseRejections";
+
+console.log('Debug module');

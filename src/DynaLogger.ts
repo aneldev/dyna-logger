@@ -58,7 +58,7 @@ export class DynaLogger {
     keepWarnLogs: true,
     keepDebugLogs: true,
     replaceGlobalLogMethods: false,
-    onLog: (log: ILog) => undefined,
+    onLog: () => undefined,
   };
   private _logs: ILog[] = [];
 

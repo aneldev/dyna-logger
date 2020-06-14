@@ -1,5 +1,4 @@
 import "jest";
-// import {jasmine, describe, it, expect, fail} from "../../dyna/jest-light"
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
 
@@ -9,27 +8,27 @@ describe('Dyna logger i/o test', () => {
   const collectedLogs: ILog[] = [];
   const logger: DynaLogger = new DynaLogger({
     bufferLimit: 200,
-    onLog:(log: ILog) => collectedLogs.push(log),
+    onLog: (log: ILog) => collectedLogs.push(log),
   });
 
   it('should log', () => {
-    logger.log('test', 'message1', {test:1});
+    logger.log('test', 'message1', {test: 1});
     expect(logger.logs.length).toBe(collectedLogs.length);
   });
   it('should info log', () => {
-    logger.info('test', 'message1', {test:1});
+    logger.info('test', 'message1', {test: 1});
     expect(logger.logs.length).toBe(collectedLogs.length);
   });
   it('should error log', () => {
-    logger.error('test', 'message1', {test:1});
+    logger.error('test', 'message1', {test: 1});
     expect(logger.logs.length).toBe(collectedLogs.length);
   });
   it('should warn log', () => {
-    logger.warn('test', 'message1', {test:1});
+    logger.warn('test', 'message1', {test: 1});
     expect(logger.logs.length).toBe(collectedLogs.length);
   });
   it('should debug log', () => {
-    logger.debug('test', 'message1', {test:1});
+    logger.debug('test', 'message1', {test: 1});
     expect(logger.logs.length).toBe(collectedLogs.length);
   });
 });
@@ -69,30 +68,30 @@ describe('Dyna logger, clear method test', () => {
 });
 
 describe('Dyna logger, replace native console', () => {
-	let logger: DynaLogger;
-	let realConsoleLogMethod: any;
+  let logger: DynaLogger;
+  let realConsoleLogMethod: any;
 
-	it('save the console method reference', () => {
-		realConsoleLogMethod = console.log;
-	});
+  it('save the console method reference', () => {
+    realConsoleLogMethod = console.log;
+  });
 
-	it('should load the logger', () => {
-		logger = new DynaLogger({
-			bufferLimit: -1,
-			replaceGlobalLogMethods: true,
-		});
-		expect(!!logger).toBe(true);
-	});
+  it('should load the logger', () => {
+    logger = new DynaLogger({
+      bufferLimit: -1,
+      replaceGlobalLogMethods: true,
+    });
+    expect(!!logger).toBe(true);
+  });
 
-	it('should global console different',()=>{
-		expect(realConsoleLogMethod).not.toBe(console.log);
-	});
+  it('should global console different', () => {
+    expect(realConsoleLogMethod).not.toBe(console.log);
+  });
 
-	it('should destroy logger',()=>{
-		logger.destroy();
-	});
+  it('should destroy logger', () => {
+    logger.destroy();
+  });
 
-	it('should restore the global console method',()=>{
-		expect(realConsoleLogMethod).toBe(console.log);
-	});
+  it('should restore the global console method', () => {
+    expect(realConsoleLogMethod).toBe(console.log);
+  });
 });

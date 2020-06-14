@@ -1,5 +1,7 @@
 .git/
 .idea/
+.vscode/
+.DS_Store
 coverage/
 debug-ground/debug-dev-on-nodejs/
 debug-ground/debug-test-on-nodejs/
@@ -9,3 +11,4 @@ temp/
 /bash.exe.stackdump
 /syncExternalsList.js
 /update-externals.sh
+/yarn-error.log

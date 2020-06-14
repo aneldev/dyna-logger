@@ -1,2 +1,7 @@
-export * from "./DynaLogger";
+export {
+  DynaLogger,
+  IDynaLoggerConfig,
+  ELogType,
+  ILog,
+} from "./DynaLogger";
 

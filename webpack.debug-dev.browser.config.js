@@ -10,6 +10,7 @@ const plugins = require('./webpack.plugins');
 const serverPort = Number(process.argv[process.argv.length - 1]);
 
 console.log('To debug open address: http://localhost:' + serverPort + ' on any browser');
+console.log('');
 
 const config = {
 	mode: "development",
