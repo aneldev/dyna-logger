@@ -11,6 +11,7 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.DynaLogger = exports.ELogType = void 0;
 require("dyna-universal");
 var universal = dynaUniversal.universal;
 var ELogType;
@@ -39,7 +40,7 @@ var DynaLogger = /** @class */ (function () {
             keepWarnLogs: true,
             keepDebugLogs: true,
             replaceGlobalLogMethods: false,
-            onLog: function (log) { return undefined; },
+            onLog: function () { return undefined; },
         };
         this._logs = [];
         this._realConsole = __assign({}, universal.console);
@@ -50,7 +51,7 @@ var DynaLogger = /** @class */ (function () {
     }
     DynaLogger.prototype.setConfig = function (config) {
         if (config === void 0) { config = {}; }
-        this._config = __assign({}, this._config, config);
+        this._config = __assign(__assign({}, this._config), config);
     };
     DynaLogger.prototype.destroy = function () {
         if (this._config.replaceGlobalLogMethods) {
@@ -106,7 +107,7 @@ var DynaLogger = /** @class */ (function () {
         get: function () {
             return this._logs.concat();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     DynaLogger.prototype.log = function (section, message, data) {
@@ -136,9 +137,9 @@ var DynaLogger = /** @class */ (function () {
             this._logs = [];
     };
     DynaLogger.prototype._log = function (type, section, text_, data, consoleTheData) {
+        var _a, _b, _c, _d, _e;
         if (text_ === void 0) { text_ = ''; }
         if (consoleTheData === void 0) { consoleTheData = true; }
-        var _a, _b, _c, _d, _e;
         var now = new Date();
         var consoleOutput = [];
         var userText;
@@ -156,7 +157,7 @@ var DynaLogger = /** @class */ (function () {
         var log = {
             date: now,
             type: type,
-            content: [consoleOutput],
+            content: consoleOutput.concat(),
         };
         if (data)
             log.content.push(data);
